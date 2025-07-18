@@ -123,7 +123,7 @@ router.get('/logs', authenticateApiToken, async (req, res): Promise<void> => {
       }
     });
   } catch (error) {
-    console.error('Error fetching logs:', error);
+    console.error('🚨 API Error - Log Fetching:', error);
     res.status(500).json({ error: 'Failed to fetch logs' });
   }
 });
