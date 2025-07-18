@@ -170,7 +170,7 @@ router.post('/tokens', async (req, res): Promise<void> => {
       id: apiToken._id
     });
   } catch (error) {
-    console.error('Error creating API token:', error);
+    console.error('🚨 API Error - Token Creation:', error);
     res.status(500).json({ error: 'Failed to create API token' });
   }
 });
