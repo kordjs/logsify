@@ -1,0 +1,197 @@
+{% extends "../layout.njk" %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold">⚙️ Settings</h1>
+    </div>
+
+    <!-- API Tokens Section -->
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">🔑 API Tokens</h2>
+            <p class="text-base-content/70 mb-6">
+                Create API tokens to send logs to your dashboard. Use these tokens in your applications to authenticate API requests.
+            </p>
+
+            <!-- Create Token Form -->
+            <div class="bg-base-100 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold mb-4">Create New Token</h3>
+                <form id="tokenForm" class="space-y-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Token Label</span>
+                        </label>
+                        <input type="text" id="tokenLabel" name="label" placeholder="e.g., Production App, Development" class="input input-bordered" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="createTokenBtn">
+                        Create Token
+                    </button>
+                </form>
+                
+                <!-- Token Display -->
+                <div id="tokenResult" class="mt-4 hidden">
+                    <div class="alert alert-warning">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.96-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-bold">Save this token now!</h4>
+                            <p class="text-sm">You won't be able to see it again.</p>
+                        </div>
+                    </div>
+                    <div class="bg-base-200 p-3 rounded mt-2">
+                        <code id="tokenValue" class="text-sm break-all"></code>
+                        <button onclick="copyToken()" class="btn btn-sm btn-ghost ml-2">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Tokens -->
+            <div class="divider">Existing Tokens</div>
+            {% if tokens.length > 0 %}
+            <div class="space-y-3">
+                {% for token in tokens %}
+                <div class="bg-base-100 rounded-lg p-4 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-semibold">{{ token.label }}</h4>
+                        <p class="text-sm text-base-content/70">
+                            Created {{ token.createdAt.toLocaleDateString() }} at {{ token.createdAt.toLocaleTimeString() }}
+                        </p>
+                    </div>
+                    <button onclick="deleteToken('{{ token._id }}', '{{ token.label }}')" class="btn btn-error btn-sm">
+                        Delete
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="text-4xl mb-4">🔑</div>
+                <h3 class="text-xl font-bold mb-2">No API tokens yet</h3>
+                <p class="text-base-content/70">Create your first token to start sending logs to your dashboard.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Usage Instructions -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">📖 Usage Instructions</h2>
+            <div class="prose max-w-none">
+                <h3>Sending Logs via API</h3>
+                <p>Use the following endpoint to send logs to your dashboard:</p>
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <code>POST /api/logs</code>
+                </div>
+                
+                <h4>Headers</h4>
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <code>Authorization: Bearer YOUR_TOKEN_HERE<br>Content-Type: application/json</code>
+                </div>
+                
+                <h4>Request Body</h4>
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <pre><code>{
+  "level": "info",
+  "namespace": "my-app",
+  "message": "User logged in",
+  "metadata": {
+    "userId": "123",
+    "ip": "192.168.1.1"
+  },
+  "timestamp": "2024-01-01T12:00:00Z"
+}</code></pre>
+                </div>
+                
+                <h4>Example with curl</h4>
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <pre><code>curl -X POST http://localhost:3000/api/logs \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "level": "info",
+    "namespace": "my-app", 
+    "message": "Test log message",
+    "metadata": {"test": true}
+  }'</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Token creation form handler
+    document.getElementById('tokenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const label = document.getElementById('tokenLabel').value;
+        const btn = document.getElementById('createTokenBtn');
+        
+        btn.disabled = true;
+        btn.textContent = 'Creating...';
+        
+        try {
+            const response = await fetch('/api/tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ label })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('tokenValue').textContent = data.token;
+                document.getElementById('tokenResult').classList.remove('hidden');
+                document.getElementById('tokenLabel').value = '';
+                
+                // Reload page after 10 seconds to show new token in list
+                setTimeout(() => {
+                    window.location.reload();
+                }, 10000);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error creating token: ' + error.message);
+        }
+        
+        btn.disabled = false;
+        btn.textContent = 'Create Token';
+    });
+    
+    // Copy token function
+    function copyToken() {
+        const tokenValue = document.getElementById('tokenValue').textContent;
+        navigator.clipboard.writeText(tokenValue).then(() => {
+            alert('Token copied to clipboard!');
+        });
+    }
+    
+    // Delete token function
+    async function deleteToken(tokenId, tokenLabel) {
+        if (confirm(`Are you sure you want to delete the token "${tokenLabel}"?`)) {
+            try {
+                const response = await fetch(`/api/tokens/${tokenId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error deleting token: ' + error.message);
+            }
+        }
+    }
+</script>
+{% endblock %}

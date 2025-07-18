@@ -1,0 +1,185 @@
+{% extends "../layout.njk" %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold">📊 Logs</h1>
+        <div class="flex items-center space-x-2">
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text mr-2">Auto-refresh</span>
+                    <input type="checkbox" id="auto-refresh" class="toggle toggle-primary" />
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title mb-4">🔍 Filters</h2>
+            <form method="GET" action="/dashboard/logs" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <!-- Level Filter -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Level</span>
+                    </label>
+                    <select name="level" class="select select-bordered">
+                        <option value="all" {% if filters.level == 'all' %}selected{% endif %}>All Levels</option>
+                        <option value="debug" {% if filters.level == 'debug' %}selected{% endif %}>Debug</option>
+                        <option value="info" {% if filters.level == 'info' %}selected{% endif %}>Info</option>
+                        <option value="warn" {% if filters.level == 'warn' %}selected{% endif %}>Warn</option>
+                        <option value="error" {% if filters.level == 'error' %}selected{% endif %}>Error</option>
+                        <option value="fatal" {% if filters.level == 'fatal' %}selected{% endif %}>Fatal</option>
+                    </select>
+                </div>
+
+                <!-- Namespace Filter -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Namespace</span>
+                    </label>
+                    <select name="namespace" class="select select-bordered">
+                        <option value="all" {% if filters.namespace == 'all' %}selected{% endif %}>All Namespaces</option>
+                        {% for ns in namespaces %}
+                        <option value="{{ ns }}" {% if filters.namespace == ns %}selected{% endif %}>{{ ns }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Start Date</span>
+                    </label>
+                    <input type="datetime-local" name="startDate" value="{{ filters.startDate }}" class="input input-bordered" />
+                </div>
+
+                <!-- End Date -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">End Date</span>
+                    </label>
+                    <input type="datetime-local" name="endDate" value="{{ filters.endDate }}" class="input input-bordered" />
+                </div>
+
+                <!-- Search -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Search</span>
+                    </label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="search" value="{{ filters.search }}" placeholder="Search logs..." class="input input-bordered flex-1" />
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats shadow bg-base-200">
+        <div class="stat">
+            <div class="stat-title">Total Logs</div>
+            <div class="stat-value text-primary">{{ pagination.total }}</div>
+            <div class="stat-desc">{{ pagination.pages }} pages</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Current Page</div>
+            <div class="stat-value">{{ pagination.page }}</div>
+            <div class="stat-desc">of {{ pagination.pages }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Results</div>
+            <div class="stat-value">{{ logs.length }}</div>
+            <div class="stat-desc">per page</div>
+        </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body p-0">
+            {% if logs.length > 0 %}
+            <div class="overflow-x-auto log-container max-h-96">
+                <table class="table table-zebra">
+                    <thead class="sticky top-0 bg-base-200">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Level</th>
+                            <th>Namespace</th>
+                            <th>Message</th>
+                            <th>Metadata</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr class="log-entry">
+                            <td class="text-sm text-base-content/70">
+                                {{ log.timestamp.toLocaleString() }}
+                            </td>
+                            <td>
+                                <span class="badge badge-sm log-{{ log.level }}">
+                                    {{ log.level.upper() }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-outline">{{ log.namespace }}</span>
+                            </td>
+                            <td class="max-w-xs truncate">
+                                <span title="{{ log.message }}">{{ log.message }}</span>
+                            </td>
+                            <td>
+                                {% if log.metadata and (log.metadata | length) > 0 %}
+                                <details class="dropdown">
+                                    <summary class="btn btn-xs btn-ghost">View</summary>
+                                    <div class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
+                                        <pre class="text-xs bg-base-200 p-2 rounded">{{ log.metadata | dump(2) }}</pre>
+                                    </div>
+                                </details>
+                                {% else %}
+                                <span class="text-base-content/50">None</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-6xl mb-4">📭</div>
+                <h3 class="text-2xl font-bold mb-2">No logs found</h3>
+                <p class="text-base-content/70">Try adjusting your filters or create some log entries using the API.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+    <div class="flex justify-center">
+        <div class="join">
+            {% if pagination.hasPrev %}
+            <a href="?page={{ pagination.page - 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">«</a>
+            {% endif %}
+            
+            {% set startPage = [pagination.page - 2, 1] | max %}
+            {% set endPage = [pagination.page + 2, pagination.pages] | min %}
+            
+            {% for page in range(startPage, endPage + 1) %}
+            {% if page == pagination.page %}
+            <span class="join-item btn btn-active">{{ page }}</span>
+            {% else %}
+            <a href="?page={{ page }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">{{ page }}</a>
+            {% endif %}
+            {% endfor %}
+            
+            {% if pagination.hasNext %}
+            <a href="?page={{ pagination.page + 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">»</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

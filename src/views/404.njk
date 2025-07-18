@@ -1,0 +1,18 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="hero min-h-screen">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-5xl font-bold text-warning mb-6">🔍 404</h1>
+            <p class="text-xl mb-8">Page not found</p>
+            <div class="space-y-4">
+                <a href="/" class="btn btn-primary">Go Home</a>
+                {% if user %}
+                <a href="/dashboard" class="btn btn-ghost">Back to Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

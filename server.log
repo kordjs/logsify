@@ -1,0 +1,54 @@
+
+> logsify@1.0.0 start
+> node dist/server.js
+
+(node:4879) [MONGOOSE] Warning: Duplicate schema index on {"githubId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4879) [MONGOOSE] Warning: Duplicate schema index on {"token":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+🚀 Server running on http://localhost:8001
+📝 Environment: development
+📡 Mongoose connected to MongoDB
+✅ MongoDB connected successfully
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:06 +0000] "GET / HTTP/1.1" 200 5143 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:06 +0000] "GET /css/styles.css HTTP/1.1" 200 87343 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:14 +0000] "GET /auth/github HTTP/1.1" 302 0 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:46 +0000] "POST /api/logs HTTP/1.1" 401 51 "-" "axios/1.10.0"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:46 +0000] "POST /api/logs HTTP/1.1" 401 41 "-" "axios/1.10.0"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:46 +0000] "GET / HTTP/1.1" 200 5143 "-" "axios/1.10.0"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:20:46 +0000] "GET /dashboard HTTP/1.1" 302 23 "-" "axios/1.10.0"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET / HTTP/1.1" 200 5143 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /css/styles.css HTTP/1.1" 200 87343 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /auth/status HTTP/1.1" 200 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /auth/github HTTP/1.1" 302 0 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "POST /auth/logout HTTP/1.1" 302 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET / HTTP/1.1" 200 5143 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "POST /api/logs HTTP/1.1" 401 51 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /api/logs HTTP/1.1" 401 51 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "POST /api/tokens HTTP/1.1" 401 35 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /api/tokens HTTP/1.1" 401 35 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "POST /api/logs HTTP/1.1" 401 41 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /api/logs HTTP/1.1" 401 41 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /dashboard HTTP/1.1" 302 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /dashboard/logs HTTP/1.1" 302 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:53 +0000] "GET /dashboard/settings HTTP/1.1" 302 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "POST /api/logs HTTP/1.1" 401 41 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "POST /api/tokens HTTP/1.1" 401 35 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "GET / HTTP/1.1" 200 5143 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "GET /auth/status HTTP/1.1" 200 23 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "GET /nonexistent-endpoint HTTP/1.1" 404 1854 "-" "python-requests/2.32.4"
+SyntaxError: Unexpected token 'j', "{"invalid": json}" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parse (/app/node_modules/body-parser/lib/types/json.js:92:19)
+    at /app/node_modules/body-parser/lib/read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (/app/node_modules/raw-body/index.js:238:16)
+    at done (/app/node_modules/raw-body/index.js:227:7)
+    at IncomingMessage.onEnd (/app/node_modules/raw-body/index.js:287:7)
+    at IncomingMessage.emit (node:events:524:28)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+::ffff:127.0.0.1 - - [18/Jul/2025:14:22:54 +0000] "POST /api/logs HTTP/1.1" 500 1911 "-" "python-requests/2.32.4"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:23:12 +0000] "GET / HTTP/1.1" 200 5143 "-" "curl/7.88.1"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:23:16 +0000] "GET /auth/status HTTP/1.1" 200 23 "-" "curl/7.88.1"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:23:20 +0000] "HEAD /auth/github HTTP/1.1" 302 0 "-" "curl/7.88.1"
+::ffff:127.0.0.1 - - [18/Jul/2025:14:23:24 +0000] "POST /api/logs HTTP/1.1" 401 51 "-" "curl/7.88.1"

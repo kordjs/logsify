@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title or 'Logsify' }}</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="min-h-screen bg-base-100">
+    {% if user %}
+        <!-- Navigation Bar -->
+        <div class="navbar bg-base-200 shadow-lg">
+            <div class="navbar-start">
+                <a href="/dashboard" class="btn btn-ghost text-xl">
+                    <span class="text-primary">📊</span>
+                    Logsify
+                </a>
+            </div>
+            
+            <div class="navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li><a href="/dashboard/logs" class="{% if request.path.startswith('/dashboard/logs') %}active{% endif %}">Logs</a></li>
+                    <li><a href="/dashboard/settings" class="{% if request.path.startswith('/dashboard/settings') %}active{% endif %}">Settings</a></li>
+                </ul>
+            </div>
+            
+            <div class="navbar-end">
+                <!-- Theme Switcher -->
+                <div class="dropdown dropdown-end mr-4">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a onclick="setTheme('light')">🌞 Light</a></li>
+                        <li><a onclick="setTheme('dark')">🌙 Dark</a></li>
+                        <li><a onclick="setTheme('cupcake')">🧁 Cupcake</a></li>
+                        <li><a onclick="setTheme('synthwave')">🌈 Synthwave</a></li>
+                        <li><a onclick="setTheme('retro')">📻 Retro</a></li>
+                        <li><a onclick="setTheme('cyberpunk')">🤖 Cyberpunk</a></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-8 rounded-full">
+                            <img src="{{ user.avatar or '/images/default-avatar.png' }}" alt="Avatar" />
+                        </div>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li class="menu-title">{{ user.name }}</li>
+                        <li><a href="/dashboard/settings">Settings</a></li>
+                        <li>
+                            <form method="POST" action="/auth/logout">
+                                <button type="submit" class="w-full text-left">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="{% if not user %}flex items-center justify-center min-h-screen{% else %}container mx-auto p-4{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-auto">
+        <div>
+            <p>© 2024 Logsify - Modern Logging Dashboard</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme management
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        // Auto-refresh logs every 30 seconds on logs page
+        if (window.location.pathname.includes('/dashboard/logs')) {
+            setInterval(() => {
+                if (document.getElementById('auto-refresh') && document.getElementById('auto-refresh').checked) {
+                    window.location.reload();
+                }
+            }, 30000);
+        }
+    </script>
+</body>
+</html>
