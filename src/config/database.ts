@@ -20,7 +20,7 @@ export const connectDB = async (): Promise<void> => {
 
 // Handle connection events
 mongoose.connection.on('connected', () => {
-  console.log('📡 Mongoose connected to MongoDB');
+  console.log('📡 Mongoose connected to MongoDB Atlas');
 });
 
 mongoose.connection.on('error', (err) => {
@@ -34,6 +34,7 @@ mongoose.connection.on('disconnected', () => {
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
   try {
+    console.log('🔄 Graceful shutdown initiated...');
     await mongoose.connection.close();
     console.log('📡 MongoDB connection closed through app termination');
     process.exit(0);
