@@ -46,8 +46,15 @@ app.use(helmet({
 // CORS middleware
 app.use(cors());
 
-// Logging middleware
+// Enhanced logging middleware
 app.use(morgan('combined'));
+
+// Add request context to all templates
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path;
+  res.locals.currentUrl = req.url;
+  next();
+});
 
 // Body parsing middleware
 app.use(express.json());
