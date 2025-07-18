@@ -112,10 +112,11 @@ router.get('/settings', requireAuth, async (req, res) => {
       tokens
     });
   } catch (error) {
-    console.error('Error fetching tokens:', error);
+    console.error('🚨 Error fetching tokens:', error);
     res.status(500).render('error.njk', { 
       title: 'Error',
-      message: 'Failed to fetch settings'
+      message: 'Failed to fetch settings',
+      currentPath: req.path
     });
   }
 });
