@@ -78,6 +78,7 @@ router.get('/logs', requireAuth, async (req, res) => {
       logs,
       pagination,
       namespaces,
+      currentPath: req.path,
       filters: {
         level: level || 'all',
         namespace: namespace || 'all',
