@@ -225,7 +225,7 @@ router.delete('/tokens/:id', async (req, res): Promise<void> => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error deleting token:', error);
+    console.error('🚨 API Error - Token Deletion:', error);
     res.status(500).json({ error: 'Failed to delete token' });
   }
 });
