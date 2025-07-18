@@ -5,9 +5,11 @@ export const connectDB = async (): Promise<void> => {
     const mongoURI = process.env['MONGODB_URI'];
     
     if (!mongoURI) {
+      console.error('❌ MONGODB_URI is not defined in environment variables');
       throw new Error('MONGODB_URI is not defined in environment variables');
     }
 
+    console.log('🔗 Connecting to MongoDB...');
     await mongoose.connect(mongoURI);
     console.log('✅ MongoDB connected successfully');
   } catch (error) {
