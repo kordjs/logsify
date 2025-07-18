@@ -110,9 +110,11 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
 });
 
 // 404 handler
-app.use((_req: express.Request, res: express.Response) => {
+app.use((req: express.Request, res: express.Response) => {
+  console.log('🔍 404 Not Found:', req.path);
   res.status(404).render('404.njk', { 
-    title: '404 - Page Not Found'
+    title: '404 - Page Not Found',
+    currentPath: req.path
   });
 });
 
