@@ -88,10 +88,11 @@ router.get('/logs', requireAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching logs:', error);
+    console.error('🚨 Error fetching logs:', error);
     res.status(500).render('error.njk', { 
       title: 'Error',
-      message: 'Failed to fetch logs'
+      message: 'Failed to fetch logs',
+      currentPath: req.path
     });
   }
 });
