@@ -63,7 +63,7 @@ router.post('/logs', authenticateApiToken, async (req, res): Promise<void> => {
       }
     });
   } catch (error) {
-    console.error('Error creating log:', error);
+    console.error('🚨 API Error - Log Creation:', error);
     res.status(500).json({ error: 'Failed to create log entry' });
   }
 });
