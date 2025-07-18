@@ -20,8 +20,8 @@
             
             <div class="navbar-center hidden lg:flex">
                 <ul class="menu menu-horizontal px-1">
-                    <li><a href="/dashboard/logs" class="{% if request.path.startswith('/dashboard/logs') %}active{% endif %}">Logs</a></li>
-                    <li><a href="/dashboard/settings" class="{% if request.path.startswith('/dashboard/settings') %}active{% endif %}">Settings</a></li>
+                    <li><a href="/dashboard/logs" class="{% if currentPath.startswith('/dashboard/logs') %}active{% endif %}">Logs</a></li>
+                    <li><a href="/dashboard/settings" class="{% if currentPath.startswith('/dashboard/settings') %}active{% endif %}">Settings</a></li>
                 </ul>
             </div>
             
