@@ -5,7 +5,8 @@ const apiTokenSchema = new Schema<IApiToken>({
   userId: {
     type: String,
     required: true,
-    ref: 'User'
+    ref: 'User',
+    index: true
   },
   token: {
     type: String,
@@ -24,9 +25,9 @@ const apiTokenSchema = new Schema<IApiToken>({
   timestamps: true
 });
 
-// Indexes for better performance
-apiTokenSchema.index({ userId: 1 });
-apiTokenSchema.index({ token: 1 });
+// Remove duplicate indexes
+// apiTokenSchema.index({ userId: 1 }); // Removed - already indexed above
+// apiTokenSchema.index({ token: 1 }); // Removed - already unique
 apiTokenSchema.index({ createdAt: 1 });
 
 export const ApiToken = mongoose.model<IApiToken>('ApiToken', apiTokenSchema);
