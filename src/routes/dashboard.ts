@@ -107,6 +107,7 @@ router.get('/settings', requireAuth, async (req, res) => {
     res.render('dashboard/settings.njk', {
       title: 'Settings - Logsify',
       user: req.user,
+      currentPath: req.path,
       tokens
     });
   } catch (error) {
