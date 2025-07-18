@@ -92,12 +92,20 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack);
+// Enhanced error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('🚨 ERROR OCCURRED:');
+  console.error('📍 Path:', req.path);
+  console.error('🔍 Method:', req.method);
+  console.error('💥 Error:', err.message);
+  console.error('📋 Stack:', err.stack);
+  console.error('🕐 Time:', new Date().toISOString());
+  console.error('---');
+  
   res.status(500).render('error.njk', { 
     title: 'Error',
-    message: process.env['NODE_ENV'] === 'development' ? err.message : 'Something went wrong!'
+    message: process.env['NODE_ENV'] === 'development' ? err.message : 'Something went wrong!',
+    currentPath: req.path
   });
 });
 
