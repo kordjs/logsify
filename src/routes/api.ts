@@ -197,7 +197,7 @@ router.get('/tokens', async (req, res): Promise<void> => {
       }))
     });
   } catch (error) {
-    console.error('Error fetching tokens:', error);
+    console.error('🚨 API Error - Token Fetching:', error);
     res.status(500).json({ error: 'Failed to fetch tokens' });
   }
 });
