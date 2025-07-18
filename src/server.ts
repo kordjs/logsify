@@ -119,8 +119,15 @@ app.use((req: express.Request, res: express.Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log('🚀 ================================');
+  console.log('🚀 Logsify Server Started!');
+  console.log('🚀 ================================');
+  console.log(`🌐 Server running: http://localhost:${PORT}`);
   console.log(`📝 Environment: ${process.env['NODE_ENV']}`);
+  console.log(`🗄️  Database: MongoDB Atlas`);
+  console.log(`🔐 Auth: GitHub OAuth`);
+  console.log(`🎨 UI: Nunjucks + TailwindCSS + DaisyUI`);
+  console.log('🚀 ================================');
 });
 
 export default app;
