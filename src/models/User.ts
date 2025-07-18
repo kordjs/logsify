@@ -17,7 +17,8 @@ const userSchema = new Schema<IUser>({
   },
   email: {
     type: String,
-    required: false
+    required: false,
+    index: true
   },
   avatar: {
     type: String,
@@ -31,8 +32,8 @@ const userSchema = new Schema<IUser>({
   timestamps: true
 });
 
-// Index for better performance
-userSchema.index({ githubId: 1 });
-userSchema.index({ email: 1 });
+// Remove duplicate indexes - unique: true already creates an index
+// userSchema.index({ githubId: 1 }); // Removed - already unique
+// userSchema.index({ email: 1 }); // Removed - already indexed above
 
 export const User = mongoose.model<IUser>('User', userSchema);
