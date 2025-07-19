@@ -33,13 +33,19 @@ router.get('/dev-bypass', async (req, res) => {
     res.redirect('/dashboard/logs');
 });
 
-// Middleware to ensure authentication
+// Middleware to ensure authentication (with dev bypass)
 const requireAuth = (
-        _req: express.Request,
+        req: express.Request,
         res: express.Response,
         next: express.NextFunction
 ): void => {
-        if (!_req.isAuthenticated()) {
+        // Development bypass
+        if (process.env.NODE_ENV === 'development' && req.path === '/dev-bypass') {
+            next();
+            return;
+        }
+        
+        if (!req.isAuthenticated()) {
                 res.redirect('/');
                 return;
         }
