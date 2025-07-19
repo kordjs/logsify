@@ -169,11 +169,14 @@ app.use((req, res, next) => {
         next();
 });
 
+Logger.server('Setting up middleware stack...');
+
 // Body parsing middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Session middleware
+Logger.server('Configuring session management...');
 app.use(
         session({
                 secret: process.env['SESSION_SECRET'] || 'your-secret-key',
@@ -187,14 +190,17 @@ app.use(
 );
 
 // Passport middleware
+Logger.server('Initializing authentication...');
 configurePassport();
 app.use(passport.initialize() as any);
 app.use(passport.session() as any);
 
 // Static files
+Logger.server('Setting up static file serving...');
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Routes
+Logger.server('Registering application routes...');
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/dashboard', dashboardRoutes);
