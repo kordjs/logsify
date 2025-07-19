@@ -4,6 +4,125 @@
 
 /* Modern Component Styles */
 @layer components {
+  /* Theme Option Buttons */
+  .theme-option {
+    @apply w-full px-3 py-2 text-left text-sm rounded-lg transition-all duration-200;
+    @apply hover:bg-base-200 hover:scale-105 active:scale-95;
+    @apply flex items-center space-x-2 font-medium;
+  }
+
+  /* Modern Log Badges */
+  .log-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+    @apply border shadow-sm;
+  }
+
+  .log-badge-error {
+    @apply bg-red-50 text-red-800 border-red-200;
+  }
+
+  .log-badge-warn {
+    @apply bg-yellow-50 text-yellow-800 border-yellow-200;
+  }
+
+  .log-badge-info {
+    @apply bg-blue-50 text-blue-800 border-blue-200;
+  }
+
+  .log-badge-debug {
+    @apply bg-gray-50 text-gray-800 border-gray-200;
+  }
+
+  .log-badge-fatal {
+    @apply bg-red-100 text-red-900 border-red-300 font-bold;
+  }
+
+  /* Dark theme log badges */
+  [data-theme="dark"] .log-badge-error {
+    @apply bg-red-900/30 text-red-300 border-red-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-warn {
+    @apply bg-yellow-900/30 text-yellow-300 border-yellow-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-info {
+    @apply bg-blue-900/30 text-blue-300 border-blue-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-debug {
+    @apply bg-gray-900/30 text-gray-300 border-gray-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-fatal {
+    @apply bg-red-900/40 text-red-200 border-red-600/50;
+  }
+
+  /* Service Badges */
+  .service-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-indigo-100 text-indigo-800 border border-indigo-200;
+  }
+
+  [data-theme="dark"] .service-badge {
+    @apply bg-indigo-900/30 text-indigo-300 border-indigo-700/50;
+  }
+
+  /* Metadata Button */
+  .metadata-button {
+    @apply p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700;
+    @apply border border-blue-200 hover:border-blue-300 transition-all duration-200;
+    @apply hover:scale-105 active:scale-95 hover:shadow-md;
+  }
+
+  [data-theme="dark"] .metadata-button {
+    @apply bg-blue-900/20 hover:bg-blue-900/40 text-blue-400 hover:text-blue-300;
+    @apply border-blue-700/50 hover:border-blue-600/50;
+  }
+
+  /* Pagination Buttons */
+  .pagination-btn {
+    @apply px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+    @apply text-base-content/70 hover:text-base-content hover:bg-base-200;
+    @apply border border-transparent hover:border-base-300;
+  }
+
+  .pagination-btn-active {
+    @apply bg-primary text-primary-foreground border-primary;
+    @apply hover:bg-primary/90;
+  }
+
+  /* Enhanced Form Controls */
+  .select, .input {
+    @apply transition-all duration-200;
+  }
+
+  .select:focus, .input:focus {
+    @apply ring-2 ring-primary/20 border-primary;
+    @apply shadow-md;
+  }
+
+  /* Button Enhancements */
+  .btn {
+    @apply transition-all duration-200 font-medium;
+  }
+
+  .btn:hover {
+    @apply transform -translate-y-0.5 shadow-lg;
+  }
+
+  .btn:active {
+    @apply transform translate-y-0;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700;
+    @apply shadow-blue-500/25 hover:shadow-blue-500/40;
+  }
+}
+
+/* Modern Component Styles */
+@layer components {
   /* Theme Transition */
   .theme-transition {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
