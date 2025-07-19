@@ -7,12 +7,14 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
 
 import { connectDB } from './config/database';
 import { configurePassport } from './config/passport';
 import authRoutes from './routes/auth';
 import apiRoutes from './routes/api';
 import dashboardRoutes from './routes/dashboard';
+import { createWebSocketServer } from './utils/websocket';
 
 // Load environment variables
 dotenv.config();
