@@ -77,15 +77,27 @@
     </footer>
 
     <script>
-        // Theme management
+        // Theme management - Enhanced version
         function setTheme(theme) {
+            console.log('Setting theme to:', theme);
             document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.dataset.theme = theme;
             localStorage.setItem('theme', theme);
+            console.log('Theme set successfully. Current theme:', document.documentElement.getAttribute('data-theme'));
         }
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
+        // Load saved theme or default to dark
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            console.log('Loading theme:', savedTheme);
+            setTheme(savedTheme);
+        });
+        
+        // Also run immediately in case DOMContentLoaded already fired
+        const immediateTheme = localStorage.getItem('theme') || 'dark';
+        if (document.documentElement) {
+            setTheme(immediateTheme);
+        }
 
         // Auto-refresh logs every 30 seconds on logs page
         if (window.location.pathname.includes('/dashboard/logs')) {
