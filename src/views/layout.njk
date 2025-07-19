@@ -202,7 +202,7 @@
 
         // Auto-refresh functionality for logs page
         if (window.location.pathname.includes('/dashboard/logs')) {
-            const autoRefreshEnabled = {{ userPreferences.autoRefresh | lower }};
+            const autoRefreshEnabled = {{ (userPreferences.autoRefresh | lower) or 'false' }};
             if (autoRefreshEnabled) {
                 setInterval(() => {
                     const checkbox = document.getElementById('auto-refresh');
