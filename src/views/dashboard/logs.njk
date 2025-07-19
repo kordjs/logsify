@@ -253,4 +253,74 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    // Store log data for modal display
+    const logsData = {{ logs | dump | safe }};
+    
+    // Open metadata modal
+    function openMetadataModal(logIndex) {
+        const log = logsData[logIndex];
+        if (!log) return;
+        
+        // Populate modal with log data
+        document.getElementById('modalLogLevel').textContent = log.level.toUpperCase();
+        document.getElementById('modalLogLevel').className = `badge badge-sm log-${log.level}`;
+        
+        document.getElementById('modalLogNamespace').textContent = log.namespace;
+        document.getElementById('modalLogTimestamp').textContent = new Date(log.timestamp).toLocaleString();
+        document.getElementById('modalLogMessage').textContent = log.message;
+        
+        // Format and display metadata
+        const metadataContent = document.getElementById('metadataContent');
+        if (log.metadata && Object.keys(log.metadata).length > 0) {
+            metadataContent.textContent = JSON.stringify(log.metadata, null, 2);
+        } else {
+            metadataContent.textContent = '{}';
+        }
+        
+        // Show modal
+        document.getElementById('metadataModal').classList.add('modal-open');
+    }
+    
+    // Close metadata modal
+    function closeMetadataModal() {
+        document.getElementById('metadataModal').classList.remove('modal-open');
+    }
+    
+    // Copy metadata to clipboard
+    function copyMetadata() {
+        const metadataContent = document.getElementById('metadataContent').textContent;
+        navigator.clipboard.writeText(metadataContent).then(() => {
+            const btn = document.getElementById('copyMetadataBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-secondary');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy to clipboard');
+        });
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('metadataModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeMetadataModal();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('metadataModal').classList.contains('modal-open')) {
+            closeMetadataModal();
+        }
+    });
+</script>
 {% endblock %}
