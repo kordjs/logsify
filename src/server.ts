@@ -162,10 +162,34 @@ app.use(morgan(morganFormat, {
         }
 }));
 
-// Add request context to all templates
-app.use((req, res, next) => {
+// Add request context and user preferences to all templates
+app.use(async (req, res, next) => {
         res.locals.currentPath = String(req.path || '');
         res.locals.currentUrl = req.url;
+        
+        // If user is authenticated, load their preferences
+        if (req.user) {
+                const user = req.user as any;
+                res.locals.userPreferences = user.preferences || {
+                        theme: 'dark',
+                        autoRefresh: false,
+                        defaultLogLevel: 'all',
+                        defaultNamespace: 'all',
+                        logsPerPage: 50,
+                        timezone: 'UTC'
+                };
+        } else {
+                // Default preferences for non-authenticated users
+                res.locals.userPreferences = {
+                        theme: 'dark',
+                        autoRefresh: false,
+                        defaultLogLevel: 'all',
+                        defaultNamespace: 'all',
+                        logsPerPage: 50,
+                        timezone: 'UTC'
+                };
+        }
+        
         next();
 });
 
