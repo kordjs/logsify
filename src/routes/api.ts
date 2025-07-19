@@ -2,6 +2,7 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiToken } from '../models/ApiToken';
 import { Log } from '../models/Log';
+import { User } from '../models/User';
 
 const router = express.Router();
 
@@ -36,6 +37,68 @@ const authenticateApiToken = async (
                 res.status(500).json({ error: 'Authentication failed' });
         }
 };
+
+// Update user preferences (session authentication required)
+router.put('/preferences', async (req, res): Promise<void> => {
+        try {
+                if (!req.isAuthenticated()) {
+                        res.status(401).json({ error: 'Authentication required' });
+                        return;
+                }
+
+                const { theme, autoRefresh, defaultLogLevel, defaultNamespace, logsPerPage, timezone } = req.body;
+
+                const user = await User.findById(req.user!._id);
+                if (!user) {
+                        res.status(404).json({ error: 'User not found' });
+                        return;
+                }
+
+                // Validate and update preferences
+                const updatedPreferences: any = {};
+                if (theme) updatedPreferences.theme = theme;
+                if (typeof autoRefresh === 'boolean') updatedPreferences.autoRefresh = autoRefresh;
+                if (defaultLogLevel) updatedPreferences.defaultLogLevel = defaultLogLevel;
+                if (defaultNamespace) updatedPreferences.defaultNamespace = defaultNamespace;
+                if (logsPerPage && logsPerPage >= 10 && logsPerPage <= 200) updatedPreferences.logsPerPage = logsPerPage;
+                if (timezone) updatedPreferences.timezone = timezone;
+
+                await user.updatePreferences(updatedPreferences);
+
+                res.json({
+                        success: true,
+                        preferences: user.preferences
+                });
+        } catch (error) {
+                console.error('🚨 API Error - Preference Update:', error);
+                res.status(500).json({ error: 'Failed to update preferences' });
+        }
+});
+
+// Get user preferences (session authentication required)
+router.get('/preferences', async (req, res): Promise<void> => {
+        try {
+                if (!req.isAuthenticated()) {
+                        res.status(401).json({ error: 'Authentication required' });
+                        return;
+                }
+
+                const user = await User.findById(req.user!._id);
+                if (!user) {
+                        res.status(404).json({ error: 'User not found' });
+                        return;
+                }
+
+                res.json({
+                        preferences: user.preferences,
+                        loginCount: user.loginCount,
+                        lastLogin: user.lastLogin
+                });
+        } catch (error) {
+                console.error('🚨 API Error - Preference Fetch:', error);
+                res.status(500).json({ error: 'Failed to fetch preferences' });
+        }
+});
 
 // Create log entry
 router.post('/logs', authenticateApiToken, async (req, res): Promise<void> => {
