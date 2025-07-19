@@ -175,16 +175,20 @@ Logger.server('Setting up middleware stack...');
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Session middleware
+// Session middleware - Enhanced for better persistence
 Logger.server('Configuring session management...');
 app.use(
         session({
                 secret: process.env['SESSION_SECRET'] || 'your-secret-key',
+                name: 'logsify.sid', // Custom session name
                 resave: false,
                 saveUninitialized: false,
+                rolling: true, // Reset expiration on each request
                 cookie: {
                         secure: process.env['NODE_ENV'] === 'production',
-                        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+                        httpOnly: true,
+                        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                        sameSite: 'lax'
                 }
         }) as any
 );
