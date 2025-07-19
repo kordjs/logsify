@@ -1,7 +1,5 @@
 import { Document } from 'mongoose';
 
-import { Document } from 'mongoose';
-
 export interface IUserPreferences {
         theme: string;
         autoRefresh: boolean;
