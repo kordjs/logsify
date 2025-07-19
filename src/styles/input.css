@@ -2,189 +2,457 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom theme switching styles */
-[data-theme='light'] {
-        color-scheme: light;
+/* Modern CSS Custom Properties for Themes */
+:root {
+  /* Default Light Theme */
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #64748b;
+  --color-secondary-foreground: #ffffff;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-muted: #f8fafc;
+  --color-muted-foreground: #64748b;
+  --color-border: #e2e8f0;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
 }
 
-[data-theme='dark'] {
-        color-scheme: dark;
+/* Dark Theme */
+[data-theme="dark"] {
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #64748b;
+  --color-secondary-foreground: #ffffff;
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-border: #334155;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f8fafc;
 }
 
-/* Custom scrollbar for logs */
-.log-container {
-        scrollbar-width: thin;
-        scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
+/* Synthwave Theme */
+[data-theme="synthwave"] {
+  --color-primary: #ff0080;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #00ffff;
+  --color-secondary-foreground: #000000;
+  --color-background: #1a0033;
+  --color-foreground: #ffffff;
+  --color-muted: #2d0066;
+  --color-muted-foreground: #cc99ff;
+  --color-border: #4d0099;
+  --color-accent: #330066;
+  --color-accent-foreground: #ffffff;
 }
 
-.log-container::-webkit-scrollbar {
-        width: 8px;
+/* Cupcake Theme */
+[data-theme="cupcake"] {
+  --color-primary: #ff69b4;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ffd700;
+  --color-secondary-foreground: #000000;
+  --color-background: #fff8dc;
+  --color-foreground: #2d1b69;
+  --color-muted: #ffefd5;
+  --color-muted-foreground: #8b4513;
+  --color-border: #dda0dd;
+  --color-accent: #f0e68c;
+  --color-accent-foreground: #2d1b69;
 }
 
-.log-container::-webkit-scrollbar-track {
-        background: theme('colors.gray.100');
+/* Retro Theme */
+[data-theme="retro"] {
+  --color-primary: #ff6b35;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f9ca24;
+  --color-secondary-foreground: #000000;
+  --color-background: #2c3e50;
+  --color-foreground: #ecf0f1;
+  --color-muted: #34495e;
+  --color-muted-foreground: #bdc3c7;
+  --color-border: #7f8c8d;
+  --color-accent: #e67e22;
+  --color-accent-foreground: #ffffff;
 }
 
-.log-container::-webkit-scrollbar-thumb {
-        background: theme('colors.gray.400');
-        border-radius: 4px;
+/* Cyberpunk Theme */
+[data-theme="cyberpunk"] {
+  --color-primary: #00ff9f;
+  --color-primary-foreground: #000000;
+  --color-secondary: #ff073a;
+  --color-secondary-foreground: #ffffff;
+  --color-background: #000000;
+  --color-foreground: #00ff9f;
+  --color-muted: #0d1117;
+  --color-muted-foreground: #39ff14;
+  --color-border: #1f2937;
+  --color-accent: #161b22;
+  --color-accent-foreground: #00ff9f;
 }
 
-.log-container::-webkit-scrollbar-thumb:hover {
-        background: theme('colors.gray.600');
+/* Aqua Theme */
+[data-theme="aqua"] {
+  --color-primary: #00ced1;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #20b2aa;
+  --color-secondary-foreground: #ffffff;
+  --color-background: #f0ffff;
+  --color-foreground: #008b8b;
+  --color-muted: #e0ffff;
+  --color-muted-foreground: #5f9ea0;
+  --color-border: #b0e0e6;
+  --color-accent: #afeeee;
+  --color-accent-foreground: #008b8b;
 }
 
-/* Dark theme scrollbar */
-[data-theme='dark'] .log-container {
-        scrollbar-color: theme('colors.gray.600') theme('colors.gray.800');
+/* Valentine Theme */
+[data-theme="valentine"] {
+  --color-primary: #e91e63;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ffb3ba;
+  --color-secondary-foreground: #000000;
+  --color-background: #ffe0e6;
+  --color-foreground: #880e4f;
+  --color-muted: #fce4ec;
+  --color-muted-foreground: #ad1457;
+  --color-border: #f8bbd9;
+  --color-accent: #ffcdd2;
+  --color-accent-foreground: #880e4f;
 }
 
-[data-theme='dark'] .log-container::-webkit-scrollbar-track {
-        background: theme('colors.gray.800');
+/* Base Utilities */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
 
-[data-theme='dark'] .log-container::-webkit-scrollbar-thumb {
-        background: theme('colors.gray.600');
+/* Modern Component Styles */
+@layer components {
+  /* Theme Transition */
+  .theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+  }
+
+  /* Theme Option Buttons */
+  .theme-option {
+    @apply w-full px-3 py-2 text-left text-sm rounded-lg transition-all duration-200;
+    @apply hover:bg-base-200 hover:scale-105 active:scale-95;
+    @apply flex items-center space-x-2 font-medium;
+  }
+  
+  .theme-option .emoji {
+    @apply text-base;
+  }
+
+  /* Modern Log Badges */
+  .log-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+    @apply border shadow-sm;
+  }
+
+  .log-badge-error {
+    @apply bg-red-50 text-red-800 border-red-200;
+  }
+
+  .log-badge-warn {
+    @apply bg-yellow-50 text-yellow-800 border-yellow-200;
+  }
+
+  .log-badge-info {
+    @apply bg-blue-50 text-blue-800 border-blue-200;
+  }
+
+  .log-badge-debug {
+    @apply bg-gray-50 text-gray-800 border-gray-200;
+  }
+
+  .log-badge-fatal {
+    @apply bg-red-100 text-red-900 border-red-300 font-bold;
+  }
+
+  /* Dark theme log badges */
+  [data-theme="dark"] .log-badge-error {
+    @apply bg-red-900/30 text-red-300 border-red-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-warn {
+    @apply bg-yellow-900/30 text-yellow-300 border-yellow-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-info {
+    @apply bg-blue-900/30 text-blue-300 border-blue-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-debug {
+    @apply bg-gray-900/30 text-gray-300 border-gray-700/50;
+  }
+
+  [data-theme="dark"] .log-badge-fatal {
+    @apply bg-red-900/40 text-red-200 border-red-600/50;
+  }
+
+  /* Service Badges */
+  .service-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-indigo-100 text-indigo-800 border border-indigo-200;
+  }
+
+  [data-theme="dark"] .service-badge {
+    @apply bg-indigo-900/30 text-indigo-300 border-indigo-700/50;
+  }
+
+  /* Metadata Button */
+  .metadata-button {
+    @apply p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700;
+    @apply border border-blue-200 hover:border-blue-300 transition-all duration-200;
+    @apply hover:scale-105 active:scale-95 hover:shadow-md;
+  }
+
+  [data-theme="dark"] .metadata-button {
+    @apply bg-blue-900/20 hover:bg-blue-900/40 text-blue-400 hover:text-blue-300;
+    @apply border-blue-700/50 hover:border-blue-600/50;
+  }
+
+  /* Pagination Buttons */
+  .pagination-btn {
+    @apply px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+    @apply text-base-content/70 hover:text-base-content hover:bg-base-200;
+    @apply border border-transparent hover:border-base-300;
+  }
+
+  .pagination-btn-active {
+    @apply bg-primary text-primary-foreground border-primary;
+    @apply hover:bg-primary/90;
+  }
+
+  /* Enhanced Form Controls */
+  .select, .input {
+    @apply transition-all duration-200;
+  }
+
+  .select:focus, .input:focus {
+    @apply ring-2 ring-primary/20 border-primary;
+    @apply shadow-md;
+  }
+
+  /* Button Enhancements */
+  .btn {
+    @apply transition-all duration-200 font-medium;
+  }
+
+  .btn:hover {
+    @apply transform -translate-y-0.5 shadow-lg;
+  }
+
+  .btn:active {
+    @apply transform translate-y-0;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700;
+    @apply shadow-blue-500/25 hover:shadow-blue-500/40;
+  }
+
+  /* Card Enhancements */
+  .card {
+    @apply transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply shadow-xl shadow-black/5;
+  }
+
+  /* Modern Scrollbars */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.400') transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: theme('colors.gray.400');
+    border-radius: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.gray.600');
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s infinite;
+  }
+
+  /* Glassmorphism Effects */
+  .glass {
+    @apply backdrop-blur-lg bg-white/10 border border-white/20;
+  }
+
+  [data-theme="dark"] .glass {
+    @apply bg-black/10 border-white/10;
+  }
+
+  /* Modern Focus Rings */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Enhanced Shadows */
+  .shadow-modern {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .shadow-modern-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Typography Enhancements */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+
+  /* Responsive Grid */
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* Loading States */
+  .loading-shimmer {
+    @apply bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%];
+    animation: shimmer 1.5s infinite linear;
+  }
+
+  [data-theme="dark"] .loading-shimmer {
+    @apply from-gray-800 via-gray-700 to-gray-800;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
 }
 
-[data-theme='dark'] .log-container::-webkit-scrollbar-thumb:hover {
-        background: theme('colors.gray.400');
+/* Theme-specific customizations */
+[data-theme="synthwave"] {
+  .btn-primary {
+    @apply bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700;
+    @apply shadow-pink-500/25 hover:shadow-pink-500/40;
+  }
+  
+  .text-primary {
+    @apply text-pink-400;
+  }
+  
+  .border-primary {
+    @apply border-pink-400;
+  }
 }
 
-/* Log level colors */
-.log-debug {
-        @apply text-gray-600;
-}
-.log-info {
-        @apply text-blue-600;
-}
-.log-warn {
-        @apply text-yellow-600;
-}
-.log-error {
-        @apply text-red-600;
-}
-.log-fatal {
-        @apply text-red-800 font-bold;
+[data-theme="cyberpunk"] {
+  .btn-primary {
+    @apply bg-gradient-to-r from-green-400 to-cyan-500 hover:from-green-500 hover:to-cyan-600;
+    @apply shadow-green-400/25 hover:shadow-green-400/40 text-black;
+  }
+  
+  .text-primary {
+    @apply text-green-400;
+  }
+  
+  .border-primary {
+    @apply border-green-400;
+  }
 }
 
-/* Dark theme log level colors */
-[data-theme='dark'] .log-debug {
-        @apply text-gray-400;
-}
-[data-theme='dark'] .log-info {
-        @apply text-blue-400;
-}
-[data-theme='dark'] .log-warn {
-        @apply text-yellow-400;
-}
-[data-theme='dark'] .log-error {
-        @apply text-red-400;
-}
-[data-theme='dark'] .log-fatal {
-        @apply text-red-300;
+[data-theme="cupcake"] {
+  .btn-primary {
+    @apply bg-gradient-to-r from-pink-400 to-rose-500 hover:from-pink-500 hover:to-rose-600;
+    @apply shadow-pink-400/25 hover:shadow-pink-400/40;
+  }
 }
 
-/* Animation for log entries */
-.log-entry {
-        animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-        from {
-                opacity: 0;
-                transform: translateY(-10px);
-        }
-        to {
-                opacity: 1;
-                transform: translateY(0);
-        }
-}
-
-/* Custom button styles */
-.btn-ghost:hover {
-        background-color: theme('colors.gray.100');
-}
-
-[data-theme='dark'] .btn-ghost:hover {
-        background-color: theme('colors.gray.700');
-}
-
-/* Line clamping for better text display */
-.line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-}
-
-/* Modal improvements */
-.modal-open {
-        display: flex !important;
-}
-
-.modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(2px);
-}
-
-/* Enhanced table responsiveness */
-.table th {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-}
-
-/* Improved metadata button */
-.btn-outline:hover {
-        transform: translateY(-1px);
-        transition: all 0.2s ease;
-}
-
-/* Enhanced log level badges */
-.log-debug {
-        @apply bg-gray-100 text-gray-800 border-gray-300;
-}
-.log-info {
-        @apply bg-blue-100 text-blue-800 border-blue-300;
-}
-.log-warn {
-        @apply bg-yellow-100 text-yellow-800 border-yellow-300;
-}
-.log-error {
-        @apply bg-red-100 text-red-800 border-red-300;
-}
-.log-fatal {
-        @apply bg-red-200 text-red-900 border-red-400 font-bold;
-}
-
-/* Dark theme log level badges */
-[data-theme='dark'] .log-debug {
-        @apply bg-gray-800 text-gray-200 border-gray-600;
-}
-[data-theme='dark'] .log-info {
-        @apply bg-blue-800 text-blue-200 border-blue-600;
-}
-[data-theme='dark'] .log-warn {
-        @apply bg-yellow-800 text-yellow-200 border-yellow-600;
-}
-[data-theme='dark'] .log-error {
-        @apply bg-red-800 text-red-200 border-red-600;
-}
-[data-theme='dark'] .log-fatal {
-        @apply bg-red-700 text-red-100 border-red-500;
-}
-
-/* Responsive table improvements */
+/* Responsive Design */
 @media (max-width: 768px) {
-        .table th,
-        .table td {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.75rem;
-        }
-        
-        .badge {
-                font-size: 0.6rem;
-                padding: 0.25rem 0.5rem;
-        }
+  .responsive-hide {
+    @apply hidden;
+  }
+  
+  .mobile-full {
+    @apply w-full;
+  }
+  
+  .mobile-stack {
+    @apply flex-col space-x-0 space-y-4;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn, .card, .badge {
+    @apply border-2 border-current;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  .print-friendly {
+    @apply bg-white text-black border border-gray-300;
+  }
 }
