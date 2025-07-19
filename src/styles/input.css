@@ -88,8 +88,8 @@
   }
 
   .pagination-btn-active {
-    @apply bg-primary text-primary-foreground border-primary;
-    @apply hover:bg-primary/90;
+    @apply bg-blue-600 text-white border-blue-600;
+    @apply hover:bg-blue-700;
   }
 
   /* Enhanced Form Controls */
