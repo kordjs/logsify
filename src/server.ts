@@ -101,6 +101,7 @@ Logger.server('Initializing Logsify Server...', {
 connectDB();
 
 // Configure Nunjucks
+Logger.server('Configuring Nunjucks template engine...');
 const njk = nunjucks.configure('src/views', {
         autoescape: true,
         express: app,
@@ -120,7 +121,10 @@ njk.addFilter('typeof', (obj) => typeof obj)
                 return typeof str === 'string' && str.startsWith(prefix);
         });
 
+Logger.success('Nunjucks configured successfully');
+
 // Security middleware
+Logger.server('Applying security middleware...');
 app.use(
         helmet({
                 contentSecurityPolicy: {
@@ -138,8 +142,25 @@ app.use(
 // CORS middleware
 app.use(cors());
 
-// Enhanced logging middleware
-app.use(morgan('combined'));
+// Enhanced logging middleware with custom format
+const morganFormat = process.env['NODE_ENV'] === 'development' 
+        ? ':method :url :status :res[content-length] - :response-time ms' 
+        : 'combined';
+
+app.use(morgan(morganFormat, {
+        stream: {
+                write: (message: string) => {
+                        const cleanMessage = message.trim();
+                        if (cleanMessage.includes(' 200 ') || cleanMessage.includes(' 304 ')) {
+                                Logger.api(`HTTP Request: ${cleanMessage}`);
+                        } else if (cleanMessage.includes(' 4') || cleanMessage.includes(' 5')) {
+                                Logger.warning(`HTTP Request: ${cleanMessage}`);
+                        } else {
+                                Logger.info(`HTTP Request: ${cleanMessage}`);
+                        }
+                }
+        }
+}));
 
 // Add request context to all templates
 app.use((req, res, next) => {
