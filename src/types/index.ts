@@ -1,5 +1,14 @@
 import { Document } from 'mongoose';
 
+export interface IUserPreferences {
+        theme: string;
+        autoRefresh: boolean;
+        defaultLogLevel: string;
+        defaultNamespace: string;
+        logsPerPage: number;
+        timezone: string;
+}
+
 export interface IUser extends Document {
         _id: string;
         githubId: string;
@@ -8,6 +17,10 @@ export interface IUser extends Document {
         email: string;
         avatar: string;
         lastLogin: Date;
+        preferences: IUserPreferences;
+        sessionData: Record<string, any>;
+        isActive: boolean;
+        loginCount: number;
         createdAt: Date;
         updatedAt: Date;
 }
