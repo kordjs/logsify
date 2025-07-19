@@ -28,14 +28,14 @@
             <ul class="menu menu-horizontal px-1 gap-2">
                 <li>
                     <a href="/dashboard/logs" 
-                       class="btn btn-ghost btn-sm {{ 'btn-active' if currentPath.startswith('/dashboard/logs') }}">
+                       class="btn btn-ghost btn-sm {{ 'btn-active' if currentPath and currentPath | safeStartsWith('/dashboard/logs') }}">
                         <i class="fas fa-list-alt text-sm"></i>
                         Logs
                     </a>
                 </li>
                 <li>
                     <a href="/dashboard/settings" 
-                       class="btn btn-ghost btn-sm {{ 'btn-active' if currentPath.startswith('/dashboard/settings') }}">
+                       class="btn btn-ghost btn-sm {{ 'btn-active' if currentPath and currentPath | safeStartsWith('/dashboard/settings') }}">
                         <i class="fas fa-cog text-sm"></i>
                         Settings
                     </a>
