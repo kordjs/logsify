@@ -207,6 +207,12 @@ app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
+        Logger.debug('Home route accessed', { 
+                userAgent: req.get('User-Agent'),
+                ip: req.ip,
+                authenticated: req.isAuthenticated()
+        });
+        
         res.render('index.njk', {
                 title: 'Logsify - Modern Logging Dashboard',
                 user: req.user
@@ -216,6 +222,8 @@ app.get('/', (req, res) => {
 // Temporary test route to access dashboard without auth for theme testing
 app.get('/test-dashboard', async (req, res) => {
         try {
+                Logger.debug('Test dashboard accessed', { ip: req.ip });
+                
                 const mockUser = {
                         _id: 'test-user-id',
                         name: 'Test User',
@@ -239,6 +247,7 @@ app.get('/test-dashboard', async (req, res) => {
                         }
                 });
         } catch (error) {
+                Logger.error('Error loading test dashboard', error, { ip: req.ip });
                 res.status(500).send('Error loading test dashboard');
         }
 });
@@ -246,6 +255,8 @@ app.get('/test-dashboard', async (req, res) => {
 // Test route with sample logs for UI testing
 app.get('/test-dashboard-with-logs', async (req, res) => {
         try {
+                Logger.debug('Test dashboard with logs accessed', { ip: req.ip });
+                
                 const mockUser = {
                         _id: 'test-user-id',
                         name: 'Test User',
@@ -333,21 +344,30 @@ app.get('/test-dashboard-with-logs', async (req, res) => {
                         }
                 });
         } catch (error) {
+                Logger.error('Error loading test dashboard with logs', error, { ip: req.ip });
                 res.status(500).send('Error loading test dashboard with logs');
         }
 });
 
 // Enhanced error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-        console.error('🚨 ERROR OCCURRED:');
-        console.error('📍 Path:', req.path);
-        console.error('🔍 Method:', req.method);
-        console.error('💥 Error:', err.message);
-        console.error('📋 Stack:', err.stack);
-        console.error('🕐 Time:', new Date().toISOString());
-        console.error('---');
+        const errorDetails = {
+                path: req.path,
+                method: req.method,
+                ip: req.ip,
+                userAgent: req.get('User-Agent'),
+                timestamp: new Date().toISOString(),
+                userId: req.user ? (req.user as any)._id : 'anonymous',
+                error: {
+                        message: err.message,
+                        stack: err.stack,
+                        name: err.name
+                }
+        };
+        
+        Logger.error('Unhandled application error occurred', err, errorDetails);
 
-        res.status(500).render('error.njk', {
+        res.status(err.status || 500).render('error.njk', {
                 title: 'Error',
                 message:
                         process.env['NODE_ENV'] === 'development'
@@ -357,9 +377,16 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
         });
 });
 
-// 404 handler
+// Enhanced 404 handler
 app.use((req: express.Request, res: express.Response) => {
-        console.log('🔍 404 Not Found:', req.path);
+        Logger.warning('404 - Page not found', {
+                path: req.path,
+                method: req.method,
+                ip: req.ip,
+                userAgent: req.get('User-Agent'),
+                referer: req.get('Referer')
+        });
+        
         res.status(404).render('404.njk', {
                 title: '404 - Page Not Found',
                 currentPath: req.path
@@ -367,15 +394,18 @@ app.use((req: express.Request, res: express.Response) => {
 });
 
 app.listen(PORT, () => {
-        console.log('🚀 ================================');
-        console.log('🚀 Logsify Server Started!');
-        console.log('🚀 ================================');
-        console.log(`🌐 Server running: http://localhost:${PORT}`);
-        console.log(`📝 Environment: ${process.env['NODE_ENV']}`);
-        console.log(`🗄️ Database: MongoDB Atlas`);
-        console.log(`🔐 Auth: GitHub OAuth`);
-        console.log(`🎨 UI: Nunjucks + TailwindCSS + DaisyUI`);
-        console.log('🚀 ================================');
+        Logger.server('🚀 ================================');
+        Logger.server('🚀 Logsify Server Started!');
+        Logger.server('🚀 ================================');
+        Logger.success(`Server running on http://localhost:${PORT}`, {
+                port: PORT,
+                environment: process.env['NODE_ENV'],
+                database: 'MongoDB Atlas',
+                auth: 'GitHub OAuth',
+                ui: 'Nunjucks + TailwindCSS + DaisyUI',
+                features: ['Theme Switching', 'Enhanced Logging', 'Modal Metadata Viewer']
+        });
+        Logger.server('🚀 ================================');
 });
 
 export default app;
