@@ -3,89 +3,109 @@
 @tailwind utilities;
 
 /* Custom theme switching styles */
-[data-theme="light"] {
-  color-scheme: light;
+[data-theme='light'] {
+        color-scheme: light;
 }
 
-[data-theme="dark"] {
-  color-scheme: dark;
+[data-theme='dark'] {
+        color-scheme: dark;
 }
 
 /* Custom scrollbar for logs */
 .log-container {
-  scrollbar-width: thin;
-  scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
 }
 
 .log-container::-webkit-scrollbar {
-  width: 8px;
+        width: 8px;
 }
 
 .log-container::-webkit-scrollbar-track {
-  background: theme('colors.gray.100');
+        background: theme('colors.gray.100');
 }
 
 .log-container::-webkit-scrollbar-thumb {
-  background: theme('colors.gray.400');
-  border-radius: 4px;
+        background: theme('colors.gray.400');
+        border-radius: 4px;
 }
 
 .log-container::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.gray.600');
+        background: theme('colors.gray.600');
 }
 
 /* Dark theme scrollbar */
-[data-theme="dark"] .log-container {
-  scrollbar-color: theme('colors.gray.600') theme('colors.gray.800');
+[data-theme='dark'] .log-container {
+        scrollbar-color: theme('colors.gray.600') theme('colors.gray.800');
 }
 
-[data-theme="dark"] .log-container::-webkit-scrollbar-track {
-  background: theme('colors.gray.800');
+[data-theme='dark'] .log-container::-webkit-scrollbar-track {
+        background: theme('colors.gray.800');
 }
 
-[data-theme="dark"] .log-container::-webkit-scrollbar-thumb {
-  background: theme('colors.gray.600');
+[data-theme='dark'] .log-container::-webkit-scrollbar-thumb {
+        background: theme('colors.gray.600');
 }
 
-[data-theme="dark"] .log-container::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.gray.400');
+[data-theme='dark'] .log-container::-webkit-scrollbar-thumb:hover {
+        background: theme('colors.gray.400');
 }
 
 /* Log level colors */
-.log-debug { @apply text-gray-600; }
-.log-info { @apply text-blue-600; }
-.log-warn { @apply text-yellow-600; }
-.log-error { @apply text-red-600; }
-.log-fatal { @apply text-red-800 font-bold; }
+.log-debug {
+        @apply text-gray-600;
+}
+.log-info {
+        @apply text-blue-600;
+}
+.log-warn {
+        @apply text-yellow-600;
+}
+.log-error {
+        @apply text-red-600;
+}
+.log-fatal {
+        @apply text-red-800 font-bold;
+}
 
 /* Dark theme log level colors */
-[data-theme="dark"] .log-debug { @apply text-gray-400; }
-[data-theme="dark"] .log-info { @apply text-blue-400; }
-[data-theme="dark"] .log-warn { @apply text-yellow-400; }
-[data-theme="dark"] .log-error { @apply text-red-400; }
-[data-theme="dark"] .log-fatal { @apply text-red-300; }
+[data-theme='dark'] .log-debug {
+        @apply text-gray-400;
+}
+[data-theme='dark'] .log-info {
+        @apply text-blue-400;
+}
+[data-theme='dark'] .log-warn {
+        @apply text-yellow-400;
+}
+[data-theme='dark'] .log-error {
+        @apply text-red-400;
+}
+[data-theme='dark'] .log-fatal {
+        @apply text-red-300;
+}
 
 /* Animation for log entries */
 .log-entry {
-  animation: fadeIn 0.3s ease-in-out;
+        animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+        from {
+                opacity: 0;
+                transform: translateY(-10px);
+        }
+        to {
+                opacity: 1;
+                transform: translateY(0);
+        }
 }
 
 /* Custom button styles */
 .btn-ghost:hover {
-  background-color: theme('colors.gray.100');
+        background-color: theme('colors.gray.100');
 }
 
-[data-theme="dark"] .btn-ghost:hover {
-  background-color: theme('colors.gray.700');
+[data-theme='dark'] .btn-ghost:hover {
+        background-color: theme('colors.gray.700');
 }

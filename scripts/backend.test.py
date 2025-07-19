@@ -12,7 +12,7 @@ from typing import Dict, Any, Optional, Tuple
 from urllib.parse import urljoin
 
 class LogsifyBackendTester:
-    def __init__(self, base_url: str = "http://localhost:8001"):
+    def __init__(self, base_url: str = "http://localhost:3000"):
         self.base_url = base_url
         self.session = requests.Session()
         self.api_token = None
@@ -343,7 +343,7 @@ class LogsifyBackendTester:
         
         # Check if server is running first
         if not self.test_server_health():
-            print("\n❌ Server is not accessible. Please ensure the server is running on port 8001.")
+            print("\n❌ Server is not accessible. Please ensure the server is running on port 3000.")
             return False
         
         # Run all test suites
@@ -401,7 +401,7 @@ class LogsifyBackendTester:
 def main():
     """Main function to run tests"""
     # Check if custom URL provided
-    base_url = "http://localhost:8001"
+    base_url = "http://localhost:3000"
     if len(sys.argv) > 1:
         base_url = sys.argv[1]
     

@@ -24,24 +24,39 @@ const PORT = process.env['PORT'] || 3000;
 connectDB();
 
 // Configure Nunjucks
-nunjucks.configure('src/views', {
-  autoescape: true,
-  express: app,
-  watch: process.env['NODE_ENV'] === 'development'
+const njk = nunjucks.configure('src/views', {
+        autoescape: true,
+        express: app,
+        watch: process.env['NODE_ENV'] === 'development'
 });
 
+njk.addFilter('typeof', (obj) => typeof obj)
+        .addFilter('max', (arr) => {
+                if (!Array.isArray(arr)) return null;
+                return Math.max(...arr);
+        })
+        .addFilter('min', (arr) => {
+                if (!Array.isArray(arr)) return null;
+                return Math.min(...arr);
+        })
+        .addFilter('safeStartsWith', (str, prefix) => {
+                return typeof str === 'string' && str.startsWith(prefix);
+        });
+
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"]
-    }
-  }
-}));
+app.use(
+        helmet({
+                contentSecurityPolicy: {
+                        directives: {
+                                defaultSrc: ["'self'"],
+                                styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+                                scriptSrc: ["'self'", "'unsafe-inline'"],
+                                imgSrc: ["'self'", 'data:', 'https:'],
+                                connectSrc: ["'self'"]
+                        }
+                }
+        })
+);
 
 // CORS middleware
 app.use(cors());
@@ -51,9 +66,9 @@ app.use(morgan('combined'));
 
 // Add request context to all templates
 app.use((req, res, next) => {
-  res.locals.currentPath = req.path;
-  res.locals.currentUrl = req.url;
-  next();
+        res.locals.currentPath = String(req.path || '');
+        res.locals.currentUrl = req.url;
+        next();
 });
 
 // Body parsing middleware
@@ -61,15 +76,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
-app.use(session({
-  secret: process.env['SESSION_SECRET'] || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env['NODE_ENV'] === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}) as any);
+app.use(
+        session({
+                secret: process.env['SESSION_SECRET'] || 'your-secret-key',
+                resave: false,
+                saveUninitialized: false,
+                cookie: {
+                        secure: process.env['NODE_ENV'] === 'production',
+                        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+                }
+        }) as any
+);
 
 // Passport middleware
 configurePassport();
@@ -86,48 +103,51 @@ app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
-  res.render('index.njk', { 
-    title: 'Logsify - Modern Logging Dashboard',
-    user: req.user 
-  });
+        res.render('index.njk', {
+                title: 'Logsify - Modern Logging Dashboard',
+                user: req.user
+        });
 });
 
 // Enhanced error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('🚨 ERROR OCCURRED:');
-  console.error('📍 Path:', req.path);
-  console.error('🔍 Method:', req.method);
-  console.error('💥 Error:', err.message);
-  console.error('📋 Stack:', err.stack);
-  console.error('🕐 Time:', new Date().toISOString());
-  console.error('---');
-  
-  res.status(500).render('error.njk', { 
-    title: 'Error',
-    message: process.env['NODE_ENV'] === 'development' ? err.message : 'Something went wrong!',
-    currentPath: req.path
-  });
+        console.error('🚨 ERROR OCCURRED:');
+        console.error('📍 Path:', req.path);
+        console.error('🔍 Method:', req.method);
+        console.error('💥 Error:', err.message);
+        console.error('📋 Stack:', err.stack);
+        console.error('🕐 Time:', new Date().toISOString());
+        console.error('---');
+
+        res.status(500).render('error.njk', {
+                title: 'Error',
+                message:
+                        process.env['NODE_ENV'] === 'development'
+                                ? err.message
+                                : 'Something went wrong!',
+                currentPath: req.path
+        });
 });
 
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
-  console.log('🔍 404 Not Found:', req.path);
-  res.status(404).render('404.njk', { 
-    title: '404 - Page Not Found',
-    currentPath: req.path
-  });
+        console.log('🔍 404 Not Found:', req.path);
+        res.status(404).render('404.njk', {
+                title: '404 - Page Not Found',
+                currentPath: req.path
+        });
 });
 
 app.listen(PORT, () => {
-  console.log('🚀 ================================');
-  console.log('🚀 Logsify Server Started!');
-  console.log('🚀 ================================');
-  console.log(`🌐 Server running: http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env['NODE_ENV']}`);
-  console.log(`🗄️  Database: MongoDB Atlas`);
-  console.log(`🔐 Auth: GitHub OAuth`);
-  console.log(`🎨 UI: Nunjucks + TailwindCSS + DaisyUI`);
-  console.log('🚀 ================================');
+        console.log('🚀 ================================');
+        console.log('🚀 Logsify Server Started!');
+        console.log('🚀 ================================');
+        console.log(`🌐 Server running: http://localhost:${PORT}`);
+        console.log(`📝 Environment: ${process.env['NODE_ENV']}`);
+        console.log(`🗄️ Database: MongoDB Atlas`);
+        console.log(`🔐 Auth: GitHub OAuth`);
+        console.log(`🎨 UI: Nunjucks + TailwindCSS + DaisyUI`);
+        console.log('🚀 ================================');
 });
 
 export default app;

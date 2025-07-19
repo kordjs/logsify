@@ -1,43 +1,46 @@
 import mongoose, { Schema } from 'mongoose';
 import { ILog } from '../types';
 
-const logSchema = new Schema<ILog>({
-  userId: {
-    type: String,
-    required: true,
-    ref: 'User'
-  },
-  tokenId: {
-    type: String,
-    required: true,
-    ref: 'ApiToken'
-  },
-  level: {
-    type: String,
-    required: true,
-    enum: ['debug', 'info', 'warn', 'error', 'fatal'],
-    default: 'info'
-  },
-  namespace: {
-    type: String,
-    required: true,
-    default: 'default'
-  },
-  message: {
-    type: String,
-    required: true
-  },
-  metadata: {
-    type: Schema.Types.Mixed,
-    default: {}
-  },
-  timestamp: {
-    type: Date,
-    default: Date.now
-  }
-}, {
-  timestamps: true
-});
+const logSchema = new Schema<ILog>(
+        {
+                userId: {
+                        type: String,
+                        required: true,
+                        ref: 'User'
+                },
+                tokenId: {
+                        type: String,
+                        required: true,
+                        ref: 'ApiToken'
+                },
+                level: {
+                        type: String,
+                        required: true,
+                        enum: ['debug', 'info', 'warn', 'error', 'fatal'],
+                        default: 'info'
+                },
+                namespace: {
+                        type: String,
+                        required: true,
+                        default: 'default'
+                },
+                message: {
+                        type: String,
+                        required: true
+                },
+                metadata: {
+                        type: Schema.Types.Mixed,
+                        default: {}
+                },
+                timestamp: {
+                        type: Date,
+                        default: Date.now
+                }
+        },
+        {
+                timestamps: true
+        }
+);
 
 // Indexes for better performance and querying
 logSchema.index({ userId: 1 });
