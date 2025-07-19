@@ -139,6 +139,100 @@ app.get('/test-dashboard', async (req, res) => {
         }
 });
 
+// Test route with sample logs for UI testing
+app.get('/test-dashboard-with-logs', async (req, res) => {
+        try {
+                const mockUser = {
+                        _id: 'test-user-id',
+                        name: 'Test User',
+                        username: 'testuser',
+                        avatar: '/images/default-avatar.png'
+                };
+                
+                // Create sample log data
+                const sampleLogs = [
+                        {
+                                _id: '1',
+                                level: 'error',
+                                namespace: 'auth-service',
+                                message: 'Failed to authenticate user with invalid credentials provided by client from IP 192.168.1.100',
+                                metadata: {
+                                        userId: 'user_12345',
+                                        ip: '192.168.1.100',
+                                        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                        attemptCount: 3,
+                                        errorCode: 'AUTH_001',
+                                        timestamp: new Date().toISOString(),
+                                        requestId: 'req_abc123def456',
+                                        sessionId: 'sess_xyz789'
+                                },
+                                timestamp: new Date(Date.now() - 300000) // 5 minutes ago
+                        },
+                        {
+                                _id: '2',
+                                level: 'info',
+                                namespace: 'payment-service',
+                                message: 'Payment processed successfully for order #ORD-2024-001',
+                                metadata: {
+                                        orderId: 'ORD-2024-001',
+                                        amount: 299.99,
+                                        currency: 'USD',
+                                        paymentMethod: 'credit_card',
+                                        cardLast4: '4532',
+                                        transactionId: 'txn_1234567890',
+                                        processingTime: '2.3s'
+                                },
+                                timestamp: new Date(Date.now() - 600000) // 10 minutes ago
+                        },
+                        {
+                                _id: '3',
+                                level: 'warn',
+                                namespace: 'api-gateway',
+                                message: 'Rate limit exceeded for client API key',
+                                metadata: {
+                                        apiKey: 'ak_test_1234...5678',
+                                        endpoint: '/api/v1/users',
+                                        requestsCount: 1001,
+                                        limitPerHour: 1000,
+                                        clientId: 'client_789'
+                                },
+                                timestamp: new Date(Date.now() - 900000) // 15 minutes ago
+                        },
+                        {
+                                _id: '4',
+                                level: 'debug',
+                                namespace: 'database',
+                                message: 'Database query executed',
+                                metadata: {
+                                        query: 'SELECT * FROM users WHERE status = $1',
+                                        params: ['active'],
+                                        executionTime: '45ms',
+                                        rowsReturned: 1250
+                                },
+                                timestamp: new Date(Date.now() - 1200000) // 20 minutes ago
+                        }
+                ];
+                
+                res.render('dashboard/logs.njk', {
+                        title: 'Logs - Logsify',
+                        user: mockUser,
+                        logs: sampleLogs,
+                        pagination: { page: 1, limit: 50, total: 4, pages: 1, hasNext: false, hasPrev: false },
+                        namespaces: ['auth-service', 'payment-service', 'api-gateway', 'database'],
+                        currentPath: '/dashboard/logs',
+                        filters: {
+                                level: 'all',
+                                namespace: 'all',
+                                startDate: '',
+                                endDate: '',
+                                search: ''
+                        }
+                });
+        } catch (error) {
+                res.status(500).send('Error loading test dashboard with logs');
+        }
+});
+
 // Enhanced error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
         console.error('🚨 ERROR OCCURRED:');
