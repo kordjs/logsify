@@ -50,10 +50,17 @@ const requireAuth = (
             return;
         }
         
-        if (!req.isAuthenticated()) {
+        // Check regular authentication or dev session
+        if (!req.isAuthenticated() && !isDevelopmentAuthenticated(req)) {
                 res.redirect('/');
                 return;
         }
+        
+        // Set user from dev session if needed
+        if (!req.user && isDevelopmentAuthenticated(req)) {
+            req.user = req.session!.devUser as any;
+        }
+        
         next();
 };
 
