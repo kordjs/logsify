@@ -454,5 +454,40 @@
             }
         });
     }
+    
+    // Enhanced filter form handling
+    const filterForm = document.querySelector('form[method="GET"]');
+    if (filterForm) {
+        // Submit form when any select dropdown changes
+        const selectElements = filterForm.querySelectorAll('select');
+        selectElements.forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Filter changed, submitting form...');
+                filterForm.submit();
+            });
+        });
+        
+        // Submit form when search input changes (with debounce)
+        const searchInput = filterForm.querySelector('input[name="search"]');
+        if (searchInput) {
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    console.log('Search term changed, submitting form...');
+                    filterForm.submit();
+                }, 500); // 500ms debounce
+            });
+        }
+        
+        // Submit form when date inputs change
+        const dateInputs = filterForm.querySelectorAll('input[type="datetime-local"]');
+        dateInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                console.log('Date filter changed, submitting form...');
+                filterForm.submit();
+            });
+        });
+    }
 </script>
 {% endblock %}
