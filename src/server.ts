@@ -109,6 +109,36 @@ app.get('/', (req, res) => {
         });
 });
 
+// Temporary test route to access dashboard without auth for theme testing
+app.get('/test-dashboard', async (req, res) => {
+        try {
+                const mockUser = {
+                        _id: 'test-user-id',
+                        name: 'Test User',
+                        username: 'testuser',
+                        avatar: '/images/default-avatar.png'
+                };
+                
+                res.render('dashboard/logs.njk', {
+                        title: 'Logs - Logsify',
+                        user: mockUser,
+                        logs: [],
+                        pagination: { page: 1, limit: 50, total: 0, pages: 0, hasNext: false, hasPrev: false },
+                        namespaces: ['default', 'app', 'system'],
+                        currentPath: '/dashboard/logs',
+                        filters: {
+                                level: 'all',
+                                namespace: 'all',
+                                startDate: '',
+                                endDate: '',
+                                search: ''
+                        }
+                });
+        } catch (error) {
+                res.status(500).send('Error loading test dashboard');
+        }
+});
+
 // Enhanced error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
         console.error('🚨 ERROR OCCURRED:');
