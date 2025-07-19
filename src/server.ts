@@ -130,10 +130,15 @@ app.use(
                 contentSecurityPolicy: {
                         directives: {
                                 defaultSrc: ["'self'"],
-                                styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-                                scriptSrc: ["'self'", "'unsafe-inline'"],
-                                imgSrc: ["'self'", 'data:', 'https:'],
-                                connectSrc: ["'self'"]
+                                styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'],
+                                scriptSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
+                                scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers for theme switching
+                                imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
+                                connectSrc: ["'self'"],
+                                fontSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
+                                objectSrc: ["'none'"],
+                                mediaSrc: ["'self'"],
+                                frameSrc: ["'none'"]
                         }
                 }
         })
