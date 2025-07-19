@@ -1,5 +1,7 @@
 import { Document } from 'mongoose';
 
+import { Document } from 'mongoose';
+
 export interface IUserPreferences {
         theme: string;
         autoRefresh: boolean;
@@ -23,6 +25,14 @@ export interface IUser extends Document {
         loginCount: number;
         createdAt: Date;
         updatedAt: Date;
+        
+        // Instance methods
+        updatePreferences(newPreferences: Partial<IUserPreferences>): Promise<IUser>;
+        recordLogin(): Promise<IUser>;
+}
+
+export interface IUserModel {
+        findActive(): Promise<IUser[]>;
 }
 
 export interface IApiToken extends Document {
