@@ -46,7 +46,14 @@ router.put('/preferences', async (req, res): Promise<void> => {
                         return;
                 }
 
-                const { theme, autoRefresh, defaultLogLevel, defaultNamespace, logsPerPage, timezone } = req.body;
+                const {
+                        theme,
+                        autoRefresh,
+                        defaultLogLevel,
+                        defaultNamespace,
+                        logsPerPage,
+                        timezone
+                } = req.body;
 
                 const user = await User.findById(req.user!._id);
                 if (!user) {
@@ -60,7 +67,8 @@ router.put('/preferences', async (req, res): Promise<void> => {
                 if (typeof autoRefresh === 'boolean') updatedPreferences.autoRefresh = autoRefresh;
                 if (defaultLogLevel) updatedPreferences.defaultLogLevel = defaultLogLevel;
                 if (defaultNamespace) updatedPreferences.defaultNamespace = defaultNamespace;
-                if (logsPerPage && logsPerPage >= 10 && logsPerPage <= 200) updatedPreferences.logsPerPage = logsPerPage;
+                if (logsPerPage && logsPerPage >= 10 && logsPerPage <= 200)
+                        updatedPreferences.logsPerPage = logsPerPage;
                 if (timezone) updatedPreferences.timezone = timezone;
 
                 await user.updatePreferences(updatedPreferences);

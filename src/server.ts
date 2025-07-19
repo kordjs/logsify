@@ -21,39 +21,40 @@ dotenv.config();
 class Logger {
         private static formatMessage(level: string, message: string, meta?: any): string {
                 const timestamp = new Date().toISOString();
-                const emoji = {
-                        info: '📄',
-                        success: '✅',
-                        warning: '⚠️',
-                        error: '🚨',
-                        debug: '🔍',
-                        server: '🚀',
-                        auth: '🔐',
-                        db: '🗄️',
-                        api: '📡'
-                }[level] || '📝';
-                
+                const emoji =
+                        {
+                                info: '📄',
+                                success: '✅',
+                                warning: '⚠️',
+                                error: '🚨',
+                                debug: '🔍',
+                                server: '🚀',
+                                auth: '🔐',
+                                db: '🗄️',
+                                api: '📡'
+                        }[level] || '📝';
+
                 let logMessage = `${emoji} [${timestamp}] [${level.toUpperCase()}] ${message}`;
-                
+
                 if (meta) {
                         logMessage += `\n   📋 Meta: ${JSON.stringify(meta, null, 2)}`;
                 }
-                
+
                 return logMessage;
         }
-        
+
         static info(message: string, meta?: any) {
                 console.log(this.formatMessage('info', message, meta));
         }
-        
+
         static success(message: string, meta?: any) {
                 console.log(this.formatMessage('success', message, meta));
         }
-        
+
         static warning(message: string, meta?: any) {
                 console.warn(this.formatMessage('warning', message, meta));
         }
-        
+
         static error(message: string, error?: any, meta?: any) {
                 const errorMeta = {
                         ...meta,
@@ -64,25 +65,25 @@ class Logger {
                 };
                 console.error(this.formatMessage('error', message, errorMeta));
         }
-        
+
         static debug(message: string, meta?: any) {
                 if (process.env['NODE_ENV'] === 'development') {
                         console.log(this.formatMessage('debug', message, meta));
                 }
         }
-        
+
         static server(message: string, meta?: any) {
                 console.log(this.formatMessage('server', message, meta));
         }
-        
+
         static auth(message: string, meta?: any) {
                 console.log(this.formatMessage('auth', message, meta));
         }
-        
+
         static db(message: string, meta?: any) {
                 console.log(this.formatMessage('db', message, meta));
         }
-        
+
         static api(message: string, meta?: any) {
                 console.log(this.formatMessage('api', message, meta));
         }
@@ -130,7 +131,12 @@ app.use(
                 contentSecurityPolicy: {
                         directives: {
                                 defaultSrc: ["'self'"],
-                                styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'],
+                                styleSrc: [
+                                        "'self'",
+                                        "'unsafe-inline'",
+                                        'https://cdnjs.cloudflare.com',
+                                        'https://cdn.jsdelivr.net'
+                                ],
                                 scriptSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
                                 scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers for theme switching
                                 imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
@@ -148,30 +154,39 @@ app.use(
 app.use(cors());
 
 // Enhanced logging middleware with custom format
-const morganFormat = process.env['NODE_ENV'] === 'development' 
-        ? ':method :url :status :res[content-length] - :response-time ms' 
-        : 'combined';
+const morganFormat =
+        process.env['NODE_ENV'] === 'development'
+                ? ':method :url :status :res[content-length] - :response-time ms'
+                : 'combined';
 
-app.use(morgan(morganFormat, {
-        stream: {
-                write: (message: string) => {
-                        const cleanMessage = message.trim();
-                        if (cleanMessage.includes(' 200 ') || cleanMessage.includes(' 304 ')) {
-                                Logger.api(`HTTP Request: ${cleanMessage}`);
-                        } else if (cleanMessage.includes(' 4') || cleanMessage.includes(' 5')) {
-                                Logger.warning(`HTTP Request: ${cleanMessage}`);
-                        } else {
-                                Logger.info(`HTTP Request: ${cleanMessage}`);
+app.use(
+        morgan(morganFormat, {
+                stream: {
+                        write: (message: string) => {
+                                const cleanMessage = message.trim();
+                                if (
+                                        cleanMessage.includes(' 200 ') ||
+                                        cleanMessage.includes(' 304 ')
+                                ) {
+                                        Logger.api(`HTTP Request: ${cleanMessage}`);
+                                } else if (
+                                        cleanMessage.includes(' 4') ||
+                                        cleanMessage.includes(' 5')
+                                ) {
+                                        Logger.warning(`HTTP Request: ${cleanMessage}`);
+                                } else {
+                                        Logger.info(`HTTP Request: ${cleanMessage}`);
+                                }
                         }
                 }
-        }
-}));
+        })
+);
 
 // Add request context and user preferences to all templates
 app.use(async (req, res, next) => {
         res.locals.currentPath = String(req.path || '');
         res.locals.currentUrl = req.url;
-        
+
         // If user is authenticated, load their preferences
         if (req.user) {
                 const user = req.user as any;
@@ -194,7 +209,7 @@ app.use(async (req, res, next) => {
                         timezone: 'UTC'
                 };
         }
-        
+
         next();
 });
 
@@ -240,12 +255,12 @@ app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
-        Logger.debug('Home route accessed', { 
+        Logger.debug('Home route accessed', {
                 userAgent: req.get('User-Agent'),
                 ip: req.ip,
                 authenticated: req.isAuthenticated()
         });
-        
+
         res.render('index.njk', {
                 title: 'Logsify - Modern Logging Dashboard',
                 user: req.user
@@ -267,7 +282,7 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
                         name: err.name
                 }
         };
-        
+
         Logger.error('Unhandled application error occurred', err, errorDetails);
 
         res.status(err.status || 500).render('error.njk', {
@@ -289,7 +304,7 @@ app.use((req: express.Request, res: express.Response) => {
                 userAgent: req.get('User-Agent'),
                 referer: req.get('Referer')
         });
-        
+
         res.status(404).render('404.njk', {
                 title: '404 - Page Not Found',
                 currentPath: req.path

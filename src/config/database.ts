@@ -2,10 +2,14 @@ import mongoose from 'mongoose';
 
 // Enhanced logging utilities (simplified version for config file)
 const dbLogger = {
-        info: (msg: string, meta?: any) => console.log(`🗄️ [DB] ${msg}`, meta ? JSON.stringify(meta) : ''),
-        success: (msg: string, meta?: any) => console.log(`✅ [DB] ${msg}`, meta ? JSON.stringify(meta) : ''),
-        error: (msg: string, error?: any) => console.error(`🚨 [DB] ${msg}`, error ? error.message || error : ''),
-        warning: (msg: string, meta?: any) => console.warn(`⚠️ [DB] ${msg}`, meta ? JSON.stringify(meta) : '')
+        info: (msg: string, meta?: any) =>
+                console.log(`🗄️ [DB] ${msg}`, meta ? JSON.stringify(meta) : ''),
+        success: (msg: string, meta?: any) =>
+                console.log(`✅ [DB] ${msg}`, meta ? JSON.stringify(meta) : ''),
+        error: (msg: string, error?: any) =>
+                console.error(`🚨 [DB] ${msg}`, error ? error.message || error : ''),
+        warning: (msg: string, meta?: any) =>
+                console.warn(`⚠️ [DB] ${msg}`, meta ? JSON.stringify(meta) : '')
 };
 
 export const connectDB = async (): Promise<void> => {
@@ -17,18 +21,18 @@ export const connectDB = async (): Promise<void> => {
                         throw new Error('MONGODB_URI is not defined in environment variables');
                 }
 
-                dbLogger.info('Connecting to MongoDB...', { 
+                dbLogger.info('Connecting to MongoDB...', {
                         uri: mongoURI.replace(/\/\/.*:.*@/, '//***:***@'), // Hide credentials in logs
                         options: { serverSelectionTimeoutMS: 5000 }
                 });
-                
+
                 await mongoose.connect(mongoURI, {
                         serverSelectionTimeoutMS: 5000, // 5 second timeout
                         maxPoolSize: 10, // Maintain up to 10 socket connections
                         socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
                         bufferCommands: false // Disable mongoose buffering
                 });
-                
+
                 dbLogger.success('MongoDB connected successfully', {
                         host: mongoose.connection.host,
                         port: mongoose.connection.port,
@@ -74,7 +78,7 @@ const gracefulShutdown = async (signal: string) => {
                         signal,
                         timestamp: new Date().toISOString()
                 });
-                
+
                 await mongoose.connection.close();
                 dbLogger.success('MongoDB connection closed through app termination', {
                         signal,

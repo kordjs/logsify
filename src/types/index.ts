@@ -23,7 +23,7 @@ export interface IUser extends Document {
         loginCount: number;
         createdAt: Date;
         updatedAt: Date;
-        
+
         // Instance methods
         updatePreferences(newPreferences: Partial<IUserPreferences>): Promise<IUser>;
         recordLogin(): Promise<IUser>;
