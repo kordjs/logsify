@@ -1,47 +1,68 @@
 {% extends "../layout.njk" %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold">📊 Logs</h1>
-        <div class="flex items-center space-x-2">
-            <div class="form-control">
-                <label class="label cursor-pointer">
-                    <span class="label-text mr-2">Auto-refresh</span>
-                    <input type="checkbox" id="auto-refresh" class="toggle toggle-primary" />
+<div class="space-y-6" x-data="logsData()">
+    <!-- Modern Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-base-content">Logs</h1>
+                <p class="text-sm text-base-content/70">Monitor your application activity in real-time</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <!-- Auto-refresh toggle -->
+            <div class="flex items-center space-x-2">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="auto-refresh" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
+                <span class="text-sm text-base-content/70">Auto-refresh</span>
+            </div>
+            
+            <!-- Live indicator -->
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">Live</span>
             </div>
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-            <h2 class="card-title mb-4">🔍 Filters</h2>
-            <form method="GET" action="/dashboard/logs" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <!-- Enhanced Filters -->
+    <div class="bg-base-100 rounded-2xl shadow-sm border border-base-300/50 backdrop-blur-sm">
+        <div class="p-6">
+            <div class="flex items-center space-x-2 mb-4">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"></path>
+                </svg>
+                <h2 class="text-lg font-semibold text-base-content">Filters</h2>
+            </div>
+            
+            <form method="GET" action="/dashboard/logs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Level Filter -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Level</span>
-                    </label>
-                    <select name="level" class="select select-bordered">
+                    <label class="block text-sm font-medium text-base-content/80 mb-2">Log Level</label>
+                    <select name="level" class="select select-bordered w-full bg-base-200 border-base-300 focus:border-primary focus:ring-1 focus:ring-primary">
                         <option value="all" {% if filters.level == 'all' %}selected{% endif %}>All Levels</option>
-                        <option value="debug" {% if filters.level == 'debug' %}selected{% endif %}>Debug</option>
-                        <option value="info" {% if filters.level == 'info' %}selected{% endif %}>Info</option>
-                        <option value="warn" {% if filters.level == 'warn' %}selected{% endif %}>Warn</option>
-                        <option value="error" {% if filters.level == 'error' %}selected{% endif %}>Error</option>
-                        <option value="fatal" {% if filters.level == 'fatal' %}selected{% endif %}>Fatal</option>
+                        <option value="debug" {% if filters.level == 'debug' %}selected{% endif %}>🔍 Debug</option>
+                        <option value="info" {% if filters.level == 'info' %}selected{% endif %}>ℹ️ Info</option>
+                        <option value="warn" {% if filters.level == 'warn' %}selected{% endif %}>⚠️ Warning</option>
+                        <option value="error" {% if filters.level == 'error' %}selected{% endif %}>❌ Error</option>
+                        <option value="fatal" {% if filters.level == 'fatal' %}selected{% endif %}>💀 Fatal</option>
                     </select>
                 </div>
 
                 <!-- Namespace Filter -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Namespace</span>
-                    </label>
-                    <select name="namespace" class="select select-bordered">
-                        <option value="all" {% if filters.namespace == 'all' %}selected{% endif %}>All Namespaces</option>
+                    <label class="block text-sm font-medium text-base-content/80 mb-2">Service</label>
+                    <select name="namespace" class="select select-bordered w-full bg-base-200 border-base-300 focus:border-primary focus:ring-1 focus:ring-primary">
+                        <option value="all" {% if filters.namespace == 'all' %}selected{% endif %}>All Services</option>
                         {% for ns in namespaces %}
                         <option value="{{ ns }}" {% if filters.namespace == ns %}selected{% endif %}>{{ ns }}</option>
                         {% endfor %}
@@ -50,276 +71,362 @@
 
                 <!-- Start Date -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Start Date</span>
-                    </label>
-                    <input type="datetime-local" name="startDate" value="{{ filters.startDate }}" class="input input-bordered" />
+                    <label class="block text-sm font-medium text-base-content/80 mb-2">From</label>
+                    <input type="datetime-local" name="startDate" value="{{ filters.startDate }}" 
+                           class="input input-bordered w-full bg-base-200 border-base-300 focus:border-primary focus:ring-1 focus:ring-primary" />
                 </div>
 
                 <!-- End Date -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">End Date</span>
-                    </label>
-                    <input type="datetime-local" name="endDate" value="{{ filters.endDate }}" class="input input-bordered" />
+                    <label class="block text-sm font-medium text-base-content/80 mb-2">To</label>
+                    <input type="datetime-local" name="endDate" value="{{ filters.endDate }}" 
+                           class="input input-bordered w-full bg-base-200 border-base-300 focus:border-primary focus:ring-1 focus:ring-primary" />
                 </div>
 
-                <!-- Search -->
+                <!-- Search and Filter Button -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Search</span>
-                    </label>
+                    <label class="block text-sm font-medium text-base-content/80 mb-2">Search</label>
                     <div class="flex space-x-2">
-                        <input type="text" name="search" value="{{ filters.search }}" placeholder="Search logs..." class="input input-bordered flex-1" />
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <input type="text" name="search" value="{{ filters.search }}" 
+                               placeholder="Search logs..." 
+                               class="input input-bordered flex-1 bg-base-200 border-base-300 focus:border-primary focus:ring-1 focus:ring-primary" />
+                        <button type="submit" class="btn btn-primary shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats shadow bg-base-200">
-        <div class="stat">
-            <div class="stat-title">Total Logs</div>
-            <div class="stat-value text-primary">{{ pagination.total }}</div>
-            <div class="stat-desc">{{ pagination.pages }} pages</div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Current Page</div>
-            <div class="stat-value">{{ pagination.page }}</div>
-            <div class="stat-desc">of {{ pagination.pages }}</div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Results</div>
-            <div class="stat-value">{{ logs.length }}</div>
-            <div class="stat-desc">per page</div>
-        </div>
-    </div>
-
-    <!-- Logs Table -->
-    <div class="card bg-base-100 shadow-xl">
-        <div class="card-body p-0">
-            {% if logs.length > 0 %}
-            <!-- Responsive table container with improved scrolling -->
-            <div class="overflow-x-auto">
-                <div class="min-w-full">
-                    <table class="table table-zebra w-full">
-                        <thead class="sticky top-0 bg-base-200 z-10">
-                            <tr>
-                                <th class="min-w-[140px]">Timestamp</th>
-                                <th class="min-w-[80px]">Level</th>
-                                <th class="min-w-[120px]">Namespace</th>
-                                <th class="min-w-[300px]">Message</th>
-                                <th class="min-w-[100px]">Metadata</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for log in logs %}
-                            <tr class="log-entry hover:bg-base-200/50 transition-colors">
-                                <td class="text-sm text-base-content/70 font-mono">
-                                    {{ log.timestamp.toLocaleString() }}
-                                </td>
-                                <td>
-                                    <span class="badge badge-sm log-{{ log.level }} font-semibold">
-                                        {{ log.level | upper }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-outline text-xs">{{ log.namespace }}</span>
-                                </td>
-                                <td class="max-w-[300px]">
-                                    <div class="line-clamp-2 text-sm" title="{{ log.message }}">
-                                        {{ log.message }}
-                                    </div>
-                                </td>
-                                <td>
-                                    {% if log.metadata and (log.metadata | length) > 0 %}
-                                    <button 
-                                        class="btn btn-xs btn-primary btn-outline"
-                                        onclick="openMetadataModal({{ loop.index0 }})"
-                                    >
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        View
-                                    </button>
-                                    {% else %}
-                                    <span class="text-base-content/50 text-xs">None</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    <!-- Modern Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-6 border border-blue-200/50 dark:border-blue-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-600 dark:text-blue-400 text-sm font-medium">Total Logs</p>
+                    <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">{{ pagination.total }}</p>
+                    <p class="text-blue-500 dark:text-blue-400 text-xs">{{ pagination.pages }} pages</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
                 </div>
             </div>
-            {% else %}
-            <div class="text-center py-12">
-                <div class="text-6xl mb-4">📭</div>
-                <h3 class="text-2xl font-bold mb-2">No logs found</h3>
-                <p class="text-base-content/70">Try adjusting your filters or create some log entries using the API.</p>
+        </div>
+        
+        <div class="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-green-600 dark:text-green-400 text-sm font-medium">Current Page</p>
+                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">{{ pagination.page }}</p>
+                    <p class="text-green-500 dark:text-green-400 text-xs">of {{ pagination.pages }}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 110 2h-1v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6H2a1 1 0 010-2h4z"></path>
+                    </svg>
+                </div>
             </div>
-            {% endif %}
+        </div>
+        
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-2xl p-6 border border-purple-200/50 dark:border-purple-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-purple-600 dark:text-purple-400 text-sm font-medium">Results</p>
+                    <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">{{ logs.length }}</p>
+                    <p class="text-purple-500 dark:text-purple-400 text-xs">per page</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Metadata Modal -->
-    <div id="metadataModal" class="modal">
-        <div class="modal-box w-11/12 max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">📋 Log Metadata</h3>
-                <button class="btn btn-sm btn-circle btn-ghost" onclick="closeMetadataModal()">✕</button>
-            </div>
-            
-            <!-- Modal content scrollable area -->
-            <div class="flex-1 overflow-y-auto">
-                <div class="bg-base-200 rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-base-content/70">Metadata Details</span>
-                        <button 
-                            class="btn btn-xs btn-secondary" 
-                            onclick="copyMetadata()"
-                            id="copyMetadataBtn"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+    <!-- Modern Logs Container -->
+    <div class="bg-base-100 rounded-2xl shadow-sm border border-base-300/50 backdrop-blur-sm overflow-hidden">
+        {% if logs.length > 0 %}
+            <!-- Logs Grid - Modern Card Layout -->
+            <div class="divide-y divide-base-300/50">
+                {% for log in logs %}
+                <div class="p-6 hover:bg-base-200/30 transition-all duration-200 cursor-pointer" 
+                     @click="openMetadataModal({{ loop.index0 }})">
+                    <div class="flex items-start justify-between space-x-4">
+                        <div class="flex-1 min-w-0">
+                            <!-- Header Row -->
+                            <div class="flex items-center space-x-3 mb-3">
+                                <!-- Level Badge -->
+                                <span class="log-badge log-badge-{{ log.level }}">
+                                    {% if log.level == 'error' %}❌
+                                    {% elif log.level == 'warn' %}⚠️  
+                                    {% elif log.level == 'info' %}ℹ️
+                                    {% elif log.level == 'debug' %}🔍
+                                    {% elif log.level == 'fatal' %}💀
+                                    {% endif %}
+                                    {{ log.level | upper }}
+                                </span>
+                                
+                                <!-- Service Badge -->
+                                <span class="service-badge">{{ log.namespace }}</span>
+                                
+                                <!-- Timestamp -->
+                                <span class="text-xs text-base-content/60 font-mono">
+                                    {{ log.timestamp.toLocaleString() }}
+                                </span>
+                            </div>
+                            
+                            <!-- Message -->
+                            <div class="mb-3">
+                                <p class="text-base-content font-medium leading-relaxed">{{ log.message }}</p>
+                            </div>
+                            
+                            <!-- Metadata Preview -->
+                            {% if log.metadata and (log.metadata | length) > 0 %}
+                            <div class="flex items-center space-x-2">
+                                <div class="text-xs text-base-content/70">
+                                    <span class="inline-flex items-center space-x-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <span>{{ log.metadata | length }} metadata fields</span>
+                                    </span>
+                                </div>
+                                <div class="text-xs text-blue-600 hover:text-blue-700 font-medium">Click to view details →</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action Button -->
+                        <button class="metadata-button" @click.stop="openMetadataModal({{ loop.index0 }})">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            Copy JSON
                         </button>
                     </div>
-                    <pre id="metadataContent" class="text-xs bg-base-300 p-4 rounded border overflow-x-auto whitespace-pre-wrap break-all"></pre>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-base-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-12 h-12 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-base-content mb-2">No logs found</h3>
+                <p class="text-base-content/70 max-w-md mx-auto">Try adjusting your filters or create some log entries using the API to see them here.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Modern Pagination -->
+    {% if pagination.pages > 1 %}
+    <div class="flex justify-center">
+        <div class="bg-base-100 rounded-2xl shadow-sm border border-base-300/50 p-2">
+            <div class="flex items-center space-x-1">
+                {% if pagination.hasPrev %}
+                <a href="?page={{ pagination.page - 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" 
+                   class="pagination-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </a>
+                {% endif %}
+                
+                {% set startPage = [pagination.page - 2, 1] | max %}
+                {% set endPage = [pagination.page + 2, pagination.pages] | min %}
+                
+                {% for page in range(startPage, endPage + 1) %}
+                {% if page == pagination.page %}
+                <span class="pagination-btn pagination-btn-active">{{ page }}</span>
+                {% else %}
+                <a href="?page={{ page }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" 
+                   class="pagination-btn">{{ page }}</a>
+                {% endif %}
+                {% endfor %}
+                
+                {% if pagination.hasNext %}
+                <a href="?page={{ pagination.page + 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" 
+                   class="pagination-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Enhanced Metadata Modal -->
+    <div x-show="modalOpen" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+                 @click="closeMetadataModal()"></div>
+            
+            <div x-show="modalOpen"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-2xl bg-base-100 border border-base-300/50 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
+                
+                <!-- Modal Header -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-base-300/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-base-content">Log Details</h3>
+                        </div>
+                        <button @click="closeMetadataModal()" class="text-base-content/70 hover:text-base-content transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- Additional log details -->
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-base-200 rounded-lg p-4">
-                        <h4 class="font-semibold mb-2">📊 Log Details</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-base-content/70">Level:</span>
-                                <span id="modalLogLevel" class="badge badge-sm"></span>
+                <!-- Modal Body -->
+                <div class="px-6 py-6 max-h-[70vh] overflow-y-auto">
+                    <!-- Log Summary -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-base-content/70 mb-1">Level</label>
+                                <span x-html="modalData.levelBadge" class="inline-block"></span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/70">Namespace:</span>
-                                <span id="modalLogNamespace" class="badge badge-outline"></span>
+                            <div>
+                                <label class="block text-sm font-medium text-base-content/70 mb-1">Service</label>
+                                <span x-text="modalData.namespace" class="service-badge"></span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/70">Timestamp:</span>
-                                <span id="modalLogTimestamp" class="font-mono text-xs"></span>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-base-content/70 mb-1">Timestamp</label>
+                                <p x-text="modalData.timestamp" class="text-sm font-mono text-base-content bg-base-200 px-3 py-2 rounded-lg"></p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-base-200 rounded-lg p-4">
-                        <h4 class="font-semibold mb-2">💬 Message</h4>
-                        <div class="text-sm">
-                            <p id="modalLogMessage" class="break-words"></p>
+                    <!-- Message -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-base-content/70 mb-2">Message</label>
+                        <div class="bg-base-200 rounded-xl p-4 border border-base-300/50">
+                            <p x-text="modalData.message" class="text-base-content leading-relaxed"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Metadata -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-medium text-base-content/70">Metadata</label>
+                            <button @click="copyMetadata()" 
+                                    x-text="copyButtonText"
+                                    class="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                            </button>
+                        </div>
+                        <div class="bg-gray-900 rounded-xl p-4 border border-base-300/50 overflow-x-auto">
+                            <pre x-text="modalData.metadataJson" class="text-sm text-green-400 font-mono whitespace-pre-wrap"></pre>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="modal-action mt-4">
-                <button class="btn btn-primary" onclick="closeMetadataModal()">Close</button>
+                
+                <!-- Modal Footer -->
+                <div class="bg-base-200/50 px-6 py-4 border-t border-base-300/50">
+                    <div class="flex justify-end">
+                        <button @click="closeMetadataModal()" class="btn btn-primary">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="modal-backdrop" onclick="closeMetadataModal()"></div>
     </div>
-
-    <!-- Pagination -->
-    {% if pagination.pages > 1 %}
-    <div class="flex justify-center">
-        <div class="join">
-            {% if pagination.hasPrev %}
-            <a href="?page={{ pagination.page - 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">«</a>
-            {% endif %}
-            
-            {% set startPage = [pagination.page - 2, 1] | max %}
-            {% set endPage = [pagination.page + 2, pagination.pages] | min %}
-            
-            {% for page in range(startPage, endPage + 1) %}
-            {% if page == pagination.page %}
-            <span class="join-item btn btn-active">{{ page }}</span>
-            {% else %}
-            <a href="?page={{ page }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">{{ page }}</a>
-            {% endif %}
-            {% endfor %}
-            
-            {% if pagination.hasNext %}
-            <a href="?page={{ pagination.page + 1 }}&level={{ filters.level }}&namespace={{ filters.namespace }}&startDate={{ filters.startDate }}&endDate={{ filters.endDate }}&search={{ filters.search }}" class="join-item btn">»</a>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <script>
-    // Store log data for modal display
-    const logsData = {{ logs | dump | safe }};
-    
-    // Open metadata modal
-    function openMetadataModal(logIndex) {
-        const log = logsData[logIndex];
-        if (!log) return;
-        
-        // Populate modal with log data
-        document.getElementById('modalLogLevel').textContent = log.level.toUpperCase();
-        document.getElementById('modalLogLevel').className = `badge badge-sm log-${log.level}`;
-        
-        document.getElementById('modalLogNamespace').textContent = log.namespace;
-        document.getElementById('modalLogTimestamp').textContent = new Date(log.timestamp).toLocaleString();
-        document.getElementById('modalLogMessage').textContent = log.message;
-        
-        // Format and display metadata
-        const metadataContent = document.getElementById('metadataContent');
-        if (log.metadata && Object.keys(log.metadata).length > 0) {
-            metadataContent.textContent = JSON.stringify(log.metadata, null, 2);
-        } else {
-            metadataContent.textContent = '{}';
-        }
-        
-        // Show modal
-        document.getElementById('metadataModal').classList.add('modal-open');
-    }
-    
-    // Close metadata modal
-    function closeMetadataModal() {
-        document.getElementById('metadataModal').classList.remove('modal-open');
-    }
-    
-    // Copy metadata to clipboard
-    function copyMetadata() {
-        const metadataContent = document.getElementById('metadataContent').textContent;
-        navigator.clipboard.writeText(metadataContent).then(() => {
-            const btn = document.getElementById('copyMetadataBtn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!';
-            btn.classList.remove('btn-secondary');
-            btn.classList.add('btn-success');
+    function logsData() {
+        return {
+            modalOpen: false,
+            modalData: {},
+            copyButtonText: 'Copy JSON',
+            logs: {{ logs | dump | safe }},
             
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.classList.remove('btn-success');
-                btn.classList.add('btn-secondary');
-            }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            alert('Failed to copy to clipboard');
-        });
-    }
-    
-    // Close modal when clicking outside
-    document.getElementById('metadataModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeMetadataModal();
+            openMetadataModal(index) {
+                const log = this.logs[index];
+                if (!log) return;
+                
+                this.modalData = {
+                    level: log.level,
+                    levelBadge: this.getLevelBadgeHtml(log.level),
+                    namespace: log.namespace,
+                    timestamp: new Date(log.timestamp).toLocaleString(),
+                    message: log.message,
+                    metadataJson: JSON.stringify(log.metadata || {}, null, 2)
+                };
+                
+                this.modalOpen = true;
+                document.body.style.overflow = 'hidden';
+            },
+            
+            closeMetadataModal() {
+                this.modalOpen = false;
+                document.body.style.overflow = '';
+            },
+            
+            async copyMetadata() {
+                try {
+                    await navigator.clipboard.writeText(this.modalData.metadataJson);
+                    this.copyButtonText = '✅ Copied!';
+                    setTimeout(() => {
+                        this.copyButtonText = 'Copy JSON';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    this.copyButtonText = '❌ Failed';
+                    setTimeout(() => {
+                        this.copyButtonText = 'Copy JSON';
+                    }, 2000);
+                }
+            },
+            
+            getLevelBadgeHtml(level) {
+                const badges = {
+                    error: '<span class="log-badge log-badge-error">❌ ERROR</span>',
+                    warn: '<span class="log-badge log-badge-warn">⚠️ WARN</span>',
+                    info: '<span class="log-badge log-badge-info">ℹ️ INFO</span>',
+                    debug: '<span class="log-badge log-badge-debug">🔍 DEBUG</span>',
+                    fatal: '<span class="log-badge log-badge-fatal">💀 FATAL</span>'
+                };
+                return badges[level] || `<span class="log-badge">${level.toUpperCase()}</span>`;
+            }
         }
-    });
+    }
     
     // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('metadataModal').classList.contains('modal-open')) {
-            closeMetadataModal();
+        if (e.key === 'Escape') {
+            // Use Alpine.js global store or dispatch custom event
+            document.dispatchEvent(new CustomEvent('close-modal'));
         }
     });
 </script>
