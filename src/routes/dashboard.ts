@@ -91,29 +91,16 @@ router.get('/test-filters', async (req, res) => {
     }
 });
 
-// Middleware to ensure authentication (with dev bypass)
+// Middleware to ensure authentication
 const requireAuth = (
         req: express.Request,
         res: express.Response,
         next: express.NextFunction
 ): void => {
-        // Development bypass
-        if (process.env.NODE_ENV === 'development' && req.path === '/dev-bypass') {
-            next();
-            return;
-        }
-        
-        // Check regular authentication or dev session
-        if (!req.isAuthenticated() && !isDevelopmentAuthenticated(req)) {
+        if (!req.isAuthenticated()) {
                 res.redirect('/');
                 return;
         }
-        
-        // Set user from dev session if needed
-        if (!req.user && isDevelopmentAuthenticated(req)) {
-            req.user = req.session!.devUser as any;
-        }
-        
         next();
 };
 
