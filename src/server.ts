@@ -330,7 +330,12 @@ httpServer.listen(PORT, () => {
                 database: 'MongoDB Atlas',
                 auth: 'GitHub OAuth',
                 ui: 'Nunjucks + TailwindCSS + DaisyUI',
-                features: ['Theme Switching', 'Enhanced Logging', 'Modal Metadata Viewer', 'WebSocket API']
+                features: [
+                        'Theme Switching',
+                        'Enhanced Logging',
+                        'Modal Metadata Viewer',
+                        'WebSocket API'
+                ]
         });
         Logger.success(`WebSocket Server available at ws://localhost:${PORT}/ws`, {
                 authentication: 'Token-based (?token=logs_xxxxx)',
