@@ -4,6 +4,35 @@ import { ApiToken } from '../models/ApiToken';
 
 const router = express.Router();
 
+// Development bypass route (remove in production)
+router.get('/dev-bypass', async (req, res) => {
+    if (process.env.NODE_ENV !== 'development') {
+        res.status(404).send('Not found');
+        return;
+    }
+    
+    // Get or create test user
+    const testUser = {
+        _id: '687ba9d81fb2fd6110cf0be5',
+        username: 'test-user',
+        name: 'Test User',
+        preferences: {
+            theme: 'dark',
+            autoRefresh: false,
+            defaultLogLevel: 'all',
+            defaultNamespace: 'all',
+            logsPerPage: 50,
+            timezone: 'UTC'
+        }
+    };
+    
+    // Mock authentication
+    req.user = testUser as any;
+    
+    // Redirect to logs with mock session
+    res.redirect('/dashboard/logs');
+});
+
 // Middleware to ensure authentication
 const requireAuth = (
         _req: express.Request,
