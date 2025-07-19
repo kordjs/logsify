@@ -26,12 +26,17 @@ router.get('/dev-bypass', async (req, res) => {
         }
     };
     
-    // Mock authentication
-    req.user = testUser as any;
+    // Store in session for subsequent requests
+    req.session!.devUser = testUser;
     
-    // Redirect to logs with mock session
+    console.log('🔓 Development bypass activated for testing');
     res.redirect('/dashboard/logs');
 });
+
+// Development auth check
+const isDevelopmentAuthenticated = (req: express.Request): boolean => {
+    return process.env.NODE_ENV === 'development' && req.session?.devUser;
+};
 
 // Middleware to ensure authentication (with dev bypass)
 const requireAuth = (
