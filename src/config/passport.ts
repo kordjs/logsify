@@ -25,19 +25,30 @@ export const configurePassport = (): void => {
                                                 user.name = profile.displayName || profile.username;
                                                 user.email = profile.emails?.[0]?.value || '';
                                                 user.avatar = profile.photos?.[0]?.value || '';
-                                                user.lastLogin = new Date();
-                                                await user.save();
+                                                user.isActive = true;
+                                                await user.recordLogin(); // Use the new method
                                                 return done(null, user);
                                         }
 
-                                        // Create new user
+                                        // Create new user with default preferences
                                         user = await User.create({
                                                 githubId: profile.id,
                                                 username: profile.username,
                                                 name: profile.displayName || profile.username,
                                                 email: profile.emails?.[0]?.value || '',
                                                 avatar: profile.photos?.[0]?.value || '',
-                                                lastLogin: new Date()
+                                                lastLogin: new Date(),
+                                                loginCount: 1,
+                                                preferences: {
+                                                        theme: 'dark',
+                                                        autoRefresh: false,
+                                                        defaultLogLevel: 'all',
+                                                        defaultNamespace: 'all',
+                                                        logsPerPage: 50,
+                                                        timezone: 'UTC'
+                                                },
+                                                sessionData: {},
+                                                isActive: true
                                         });
 
                                         return done(null, user);
@@ -55,7 +66,11 @@ export const configurePassport = (): void => {
         passport.deserializeUser(async (id: string, done) => {
                 try {
                         const user = await User.findById(id);
-                        done(null, user);
+                        if (user && user.isActive) {
+                                done(null, user);
+                        } else {
+                                done(null, false);
+                        }
                 } catch (error) {
                         done(error, null);
                 }
