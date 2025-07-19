@@ -17,8 +17,85 @@ import dashboardRoutes from './routes/dashboard';
 // Load environment variables
 dotenv.config();
 
+// Enhanced logging utilities
+class Logger {
+        private static formatMessage(level: string, message: string, meta?: any): string {
+                const timestamp = new Date().toISOString();
+                const emoji = {
+                        info: '📄',
+                        success: '✅',
+                        warning: '⚠️',
+                        error: '🚨',
+                        debug: '🔍',
+                        server: '🚀',
+                        auth: '🔐',
+                        db: '🗄️',
+                        api: '📡'
+                }[level] || '📝';
+                
+                let logMessage = `${emoji} [${timestamp}] [${level.toUpperCase()}] ${message}`;
+                
+                if (meta) {
+                        logMessage += `\n   📋 Meta: ${JSON.stringify(meta, null, 2)}`;
+                }
+                
+                return logMessage;
+        }
+        
+        static info(message: string, meta?: any) {
+                console.log(this.formatMessage('info', message, meta));
+        }
+        
+        static success(message: string, meta?: any) {
+                console.log(this.formatMessage('success', message, meta));
+        }
+        
+        static warning(message: string, meta?: any) {
+                console.warn(this.formatMessage('warning', message, meta));
+        }
+        
+        static error(message: string, error?: any, meta?: any) {
+                const errorMeta = {
+                        ...meta,
+                        ...(error && {
+                                error: error.message || error,
+                                stack: error.stack
+                        })
+                };
+                console.error(this.formatMessage('error', message, errorMeta));
+        }
+        
+        static debug(message: string, meta?: any) {
+                if (process.env['NODE_ENV'] === 'development') {
+                        console.log(this.formatMessage('debug', message, meta));
+                }
+        }
+        
+        static server(message: string, meta?: any) {
+                console.log(this.formatMessage('server', message, meta));
+        }
+        
+        static auth(message: string, meta?: any) {
+                console.log(this.formatMessage('auth', message, meta));
+        }
+        
+        static db(message: string, meta?: any) {
+                console.log(this.formatMessage('db', message, meta));
+        }
+        
+        static api(message: string, meta?: any) {
+                console.log(this.formatMessage('api', message, meta));
+        }
+}
+
 const app = express();
 const PORT = process.env['PORT'] || 3000;
+
+Logger.server('Initializing Logsify Server...', {
+        port: PORT,
+        env: process.env['NODE_ENV'],
+        nodeVersion: process.version
+});
 
 // Connect to MongoDB
 connectDB();
