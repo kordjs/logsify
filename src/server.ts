@@ -313,21 +313,6 @@ app.use((req: express.Request, res: express.Response) => {
         });
 });
 
-app.listen(PORT, () => {
-        Logger.server('🚀 ================================');
-        Logger.server('🚀 Logsify Server Started!');
-        Logger.server('🚀 ================================');
-        Logger.success(`Server running on http://localhost:${PORT}`, {
-                port: PORT,
-                environment: process.env['NODE_ENV'],
-                database: 'MongoDB Atlas',
-                auth: 'GitHub OAuth',
-                ui: 'Nunjucks + TailwindCSS + DaisyUI',
-                features: ['Theme Switching', 'Enhanced Logging', 'Modal Metadata Viewer', 'WebSocket API']
-        });
-        Logger.server('🚀 ================================');
-});
-
 // Create HTTP server and add WebSocket support
 const httpServer = createServer(app);
 
