@@ -101,50 +101,58 @@
     <div class="card bg-base-100 shadow-xl">
         <div class="card-body p-0">
             {% if logs.length > 0 %}
-            <div class="overflow-x-auto log-container max-h-96">
-                <table class="table table-zebra">
-                    <thead class="sticky top-0 bg-base-200">
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Level</th>
-                            <th>Namespace</th>
-                            <th>Message</th>
-                            <th>Metadata</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for log in logs %}
-                        <tr class="log-entry">
-                            <td class="text-sm text-base-content/70">
-                                {{ log.timestamp.toLocaleString() }}
-                            </td>
-                            <td>
-                                <span class="badge badge-sm log-{{ log.level }}">
-                                    {{ log.level | upper }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-outline">{{ log.namespace }}</span>
-                            </td>
-                            <td class="max-w-xs truncate">
-                                <span title="{{ log.message }}">{{ log.message }}</span>
-                            </td>
-                            <td>
-                                {% if log.metadata and (log.metadata | length) > 0 %}
-                                <details class="dropdown">
-                                    <summary class="btn btn-xs btn-ghost">View</summary>
-                                    <div class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
-                                        <pre class="text-xs bg-base-200 p-2 rounded">{{ log.metadata | dump(2) }}</pre>
+            <!-- Responsive table container with improved scrolling -->
+            <div class="overflow-x-auto">
+                <div class="min-w-full">
+                    <table class="table table-zebra w-full">
+                        <thead class="sticky top-0 bg-base-200 z-10">
+                            <tr>
+                                <th class="min-w-[140px]">Timestamp</th>
+                                <th class="min-w-[80px]">Level</th>
+                                <th class="min-w-[120px]">Namespace</th>
+                                <th class="min-w-[300px]">Message</th>
+                                <th class="min-w-[100px]">Metadata</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr class="log-entry hover:bg-base-200/50 transition-colors">
+                                <td class="text-sm text-base-content/70 font-mono">
+                                    {{ log.timestamp.toLocaleString() }}
+                                </td>
+                                <td>
+                                    <span class="badge badge-sm log-{{ log.level }} font-semibold">
+                                        {{ log.level | upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-outline text-xs">{{ log.namespace }}</span>
+                                </td>
+                                <td class="max-w-[300px]">
+                                    <div class="line-clamp-2 text-sm" title="{{ log.message }}">
+                                        {{ log.message }}
                                     </div>
-                                </details>
-                                {% else %}
-                                <span class="text-base-content/50">None</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                </td>
+                                <td>
+                                    {% if log.metadata and (log.metadata | length) > 0 %}
+                                    <button 
+                                        class="btn btn-xs btn-primary btn-outline"
+                                        onclick="openMetadataModal({{ loop.index0 }})"
+                                    >
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        View
+                                    </button>
+                                    {% else %}
+                                    <span class="text-base-content/50 text-xs">None</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             {% else %}
             <div class="text-center py-12">
@@ -154,6 +162,69 @@
             </div>
             {% endif %}
         </div>
+    </div>
+
+    <!-- Metadata Modal -->
+    <div id="metadataModal" class="modal">
+        <div class="modal-box w-11/12 max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">📋 Log Metadata</h3>
+                <button class="btn btn-sm btn-circle btn-ghost" onclick="closeMetadataModal()">✕</button>
+            </div>
+            
+            <!-- Modal content scrollable area -->
+            <div class="flex-1 overflow-y-auto">
+                <div class="bg-base-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-base-content/70">Metadata Details</span>
+                        <button 
+                            class="btn btn-xs btn-secondary" 
+                            onclick="copyMetadata()"
+                            id="copyMetadataBtn"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            Copy JSON
+                        </button>
+                    </div>
+                    <pre id="metadataContent" class="text-xs bg-base-300 p-4 rounded border overflow-x-auto whitespace-pre-wrap break-all"></pre>
+                </div>
+                
+                <!-- Additional log details -->
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-base-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2">📊 Log Details</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Level:</span>
+                                <span id="modalLogLevel" class="badge badge-sm"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Namespace:</span>
+                                <span id="modalLogNamespace" class="badge badge-outline"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-base-content/70">Timestamp:</span>
+                                <span id="modalLogTimestamp" class="font-mono text-xs"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-base-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2">💬 Message</h4>
+                        <div class="text-sm">
+                            <p id="modalLogMessage" class="break-words"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-action mt-4">
+                <button class="btn btn-primary" onclick="closeMetadataModal()">Close</button>
+            </div>
+        </div>
+        <div class="modal-backdrop" onclick="closeMetadataModal()"></div>
     </div>
 
     <!-- Pagination -->
